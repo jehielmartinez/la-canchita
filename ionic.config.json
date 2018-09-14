@@ -1,0 +1,7 @@
+{
+  "name": "la-canchita",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}
