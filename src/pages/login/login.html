@@ -1,0 +1,59 @@
+<!--
+  Generated template for the LoginPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Login</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-row>
+    <div class="logo-image">
+      <img src="assets/imgs/logo-la-canchita.png">
+    </div>
+  </ion-row>
+  <ion-list>
+    <ion-item *ngIf="operation === 'register'">
+      <ion-label floating>Tipo de Usuario</ion-label>
+      <ion-select [(ngModel)]="type">
+        <ion-option value="player">Jugador</ion-option>
+        <ion-option value="admin">Administrador</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="operation === 'register'">
+        <ion-label floating>Nombre</ion-label>
+        <ion-input [(ngModel)]="name" type="text"></ion-input>
+      </ion-item>
+    <ion-item *ngIf="operation === 'register'">
+      <ion-label floating>Telefono</ion-label>
+      <ion-input [(ngModel)]="phone" type="number"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Correo</ion-label>
+      <ion-input [(ngModel)]="email" type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Contraseña</ion-label>
+      <ion-input [(ngModel)]="password" type="password"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="operation === 'register'">
+      <ion-label floating>Repetir Contraseña</ion-label>
+      <ion-input [(ngModel)]="password2" type="password"></ion-input>
+    </ion-item>
+
+  </ion-list>
+  <div padding>
+    <span *ngIf="operation === 'login'">Aun no tienes cuenta? <a (click)="operation = 'register'"><b>Click Aquí</b></a></span>
+    <span *ngIf="operation === 'register'">Ya tienes cuenta? <a (click)="operation = 'login'"><b>Click Aquí</b></a></span>
+    <hr>
+    <button *ngIf="operation === 'login'" ion-button block round (click)="loginWithEmail()">Ingresar</button>
+    <button *ngIf="operation === 'register'" ion-button block round (click)="registerWithEmail()">Registrarse</button>
+  </div>
+</ion-content>
