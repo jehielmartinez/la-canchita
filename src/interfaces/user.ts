@@ -6,4 +6,6 @@ export interface User {
     avatar?: string;
     address?: string;
     type: string;
+    images?: any;
+    complex?:any;
   }

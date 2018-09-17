@@ -1,3 +1,7 @@
+import { NewFieldPage } from './../pages/new-field/new-field';
+import { Camera } from '@ionic-native/camera';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { NewComplexPage } from './../pages/new-complex/new-complex';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
@@ -16,6 +20,8 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { DatabaseProvider } from '../providers/database/database';
 import { HttpClientModule } from '@angular/common/http';
+import { IonicImageViewerModule } from 'ionic-img-viewer';
+import { ImagePicker } from '@ionic-native/image-picker';
 
 
 export const firebaseConfig = {
@@ -32,7 +38,9 @@ export const firebaseConfig = {
     MyApp,
     HomePage,
     ListPage,
-    LoginPage
+    LoginPage,
+    NewComplexPage,
+    NewFieldPage
   ],
   imports: [
     BrowserModule,
@@ -40,14 +48,18 @@ export const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule,
     AngularFireAuthModule,  
+    AngularFireStorageModule,
     HttpClientModule,
-    ],
+    IonicImageViewerModule
+      ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     HomePage,
     ListPage,
-    LoginPage
+    LoginPage,
+    NewComplexPage,
+    NewFieldPage
   ],
   providers: [
     StatusBar,
@@ -55,6 +67,8 @@ export const firebaseConfig = {
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthenticationProvider,
     DatabaseProvider,
+    ImagePicker,
+    Camera
   ]
 })
 export class AppModule {}

@@ -6,30 +6,124 @@
 -->
 <ion-header>
 
-  <ion-navbar>
-    <ion-title>Nuevo Complejo</ion-title>
+  <ion-navbar class="hidden">
+    <ion-title>Editar Complejo</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
+  <ion-row>
+    <ion-slides pager slidesPerView="1">
+      <ion-slide *ngFor="let img of complexImages">
+        <img src="{{img.imageUrl}}" class="thumb-img" imageViewer/>
+      </ion-slide>
+    </ion-slides>
+  </ion-row>
+  <ion-row class="inline">
+    <ion-col col-12 offset-8>
+      <button ion-button (click)="uploadImage('camera')">
+        <ion-icon name="camera"></ion-icon>
+      </button>
+      <button ion-button (click)="uploadImage('images')">
+        <ion-icon name="images"></ion-icon>
+      </button>
+    </ion-col>
+  </ion-row>
+
   <ion-list>
     <ion-item>
-      <ion-label floating>Nombre del Complejo</ion-label>
-      <ion-input type="text"></ion-input>
+      <ion-label floating>
+        <ion-icon name="contact"></ion-icon> Nombre del Complejo
+      </ion-label>
+      <ion-input [(ngModel)]="complex.name" type="text"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label floating>Direccion</ion-label>
-      <ion-input type="text"></ion-input>
+      <ion-label floating>
+        <ion-icon name="pin"></ion-icon> Direccion
+      </ion-label>
+      <ion-input [(ngModel)]="complex.address" type="text"></ion-input>
     </ion-item>
     <ion-item>
-        <ion-label floating>Descripcion</ion-label>
-        <ion-input type="text"></ion-input>
-      </ion-item>
-    <ion-item>
-      <ion-label floating>Telefono</ion-label>
-      <ion-input type="number"></ion-input>
+      <ion-label floating>
+        <ion-icon name="flag"></ion-icon> Pais
+      </ion-label>
+      <ion-select [(ngModel)]="complex.country">
+        <ion-option *ngFor="let country of countries">{{country}}</ion-option>
+      </ion-select>
     </ion-item>
+    <ion-item>
+      <ion-label floating>
+        <ion-icon name="map"></ion-icon> Ciudad
+      </ion-label>
+      <ion-select [(ngModel)]="complex.city">
+        <div *ngFor="let city of cities">
+          <ion-option *ngIf="city.country == complex.country">{{city.city}}</ion-option>
+        </div>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>
+        <ion-icon name="call"></ion-icon> Telefono
+      </ion-label>
+      <ion-input [(ngModel)]="complex.phone" type="tel"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>
+        <ion-icon name="options"></ion-icon> Caracteristicas
+      </ion-label>
+      <ion-select [(ngModel)]="complex.options" multiple="true">
+        <ion-option value="wifi">Wifi Disponible</ion-option>
+        <ion-option value="no-smoking">Prohibido Fumar</ion-option>
+        <ion-option value="car">Parqueo Disponible</ion-option>
+        <ion-option value="beer">Bebidas Alcoholicas</ion-option>
+        <ion-option value="pizza">Cafeteria</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>
+        <ion-icon name="calendar"></ion-icon> Dias Laborales
+      </ion-label>
+      <ion-select [(ngModel)]="complex.workingDays" multiple="true">
+        <ion-option value="monday">Lunes</ion-option>
+        <ion-option value="tuesday">Martes</ion-option>
+        <ion-option value="wednesday">Miercoles</ion-option>
+        <ion-option value="thursday">Jueves</ion-option>
+        <ion-option value="friday">Viernes</ion-option>
+        <ion-option value="saturday">Sabado</ion-option>
+        <ion-option value="sunday">Domingo</ion-option>
+
+      </ion-select>
+    </ion-item>
+
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label floating>
+            <ion-icon name="time"></ion-icon> Apertura
+          </ion-label>
+          <ion-datetime [(ngModel)]="complex.openAt" displayFormat="h:mm A" pickerFormat="h mm A"></ion-datetime>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label floating>
+            <ion-icon name="time"></ion-icon> Cierre
+          </ion-label>
+          <ion-datetime [(ngModel)]="complex.closeAt" displayFormat="h:mm A" pickerFormat="h mm A"></ion-datetime>
+        </ion-item>
+      </ion-col>
+    </ion-row>
   </ion-list>
+  <ion-row>
+    <ion-col>
+      <button ion-button block round (click)="goToNewField()">Guardar</button>
+    </ion-col>
+    <ion-col>
+      <button ion-button block round (click)="saveComplex()" color="danger">Cancelar</button>
+    </ion-col>
+  </ion-row>
 </ion-content>

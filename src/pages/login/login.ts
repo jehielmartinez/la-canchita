@@ -4,6 +4,7 @@ import { DatabaseProvider } from '../../providers/database/database';
 import { AuthenticationProvider } from '../../providers/authentication/authentication';
 import { User } from '../../interfaces/user';
 import { HomePage } from '../home/home';
+import { NewComplexPage } from '../new-complex/new-complex';
 
 /**
  * Generated class for the LoginPage page.
@@ -56,7 +57,11 @@ export class LoginPage {
           position: 'bottom'
         });
         toast.present();
-        this.navCtrl.setRoot(HomePage);
+        if(user.type = 'admin'){
+          this.navCtrl.setRoot(NewComplexPage);
+        }else{
+          this.navCtrl.setRoot(HomePage);
+        }
       }).catch((e) => {
         console.log(e);
       });
