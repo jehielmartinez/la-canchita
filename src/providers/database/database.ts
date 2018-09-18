@@ -20,8 +20,8 @@ export class DatabaseProvider {
   getUserById(uid){
     return this.firebaseDatabase.object('users/' + uid);
   }
-  getComplexImages(uid){
-    return this.firebaseDatabase.list('users/' + uid + '/complex/images');
+  getComplexImages(uid, complexId){
+    return this.firebaseDatabase.list('users/' + uid + '/complexes/' + complexId + '/images/');
   }
   uploadImage(imageId, image){
     return this.fireStorage.ref('images/' + imageId).putString(image, 'data_url');
@@ -30,7 +30,7 @@ export class DatabaseProvider {
     return this.fireStorage.ref('/images/' + image_name).getDownloadURL();
   }
   updateComplexImages(imageURL, uid){
-    return this.firebaseDatabase.object('users/' + uid + '/complex/images/' + imageURL.imageId).set(imageURL);
+    return this.firebaseDatabase.object('users/' + uid + '/complexes/' + imageURL.complexId + '/images/' + imageURL.imageId).set(imageURL);
   }
   saveComplex(uid, complex){
     return this.firebaseDatabase.object('users/' + uid + '/complexes/' + complex.id).update(complex);

@@ -7,5 +7,5 @@ export interface User {
     address?: string;
     type: string;
     images?: any;
-    complex?:any;
+    complexes?:any;
   }

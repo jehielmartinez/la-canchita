@@ -1,3 +1,4 @@
+import { AdminHomePage } from './../pages/admin-home/admin-home';
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -14,7 +15,7 @@ import { NewComplexPage } from '../pages/new-complex/new-complex';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = NewComplexPage;
+  rootPage: any = AdminHomePage;
 
   pages: Array<{title: string, component: any}>;
 

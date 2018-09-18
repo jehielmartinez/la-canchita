@@ -69,7 +69,7 @@ export class NewComplexPage {
   }
 
   getComplexImages() {
-    this.databaseProvider.getComplexImages(this.currentUser.uid).valueChanges().subscribe((data) => {
+    this.databaseProvider.getComplexImages(this.currentUser.uid, this.complex.id).valueChanges().subscribe((data) => {
       this.complexImages = data;
     }, (err) => {
       console.log(err);
@@ -97,7 +97,8 @@ export class NewComplexPage {
         this.databaseProvider.getDownloadUrl(this.imageId + '.jpg').subscribe((url) => {
           let imageURL = {
             imageId: this.imageId,
-            imageUrl: url
+            imageUrl: url,
+            complexId: this.complex.id
           };
           this.databaseProvider.updateComplexImages(imageURL, this.currentUser.uid).catch(() => {
             console.log('Imagenes Actualizadas');
