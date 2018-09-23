@@ -14,5 +14,76 @@
 
 
 <ion-content padding>
+  <ion-list class="form-view">
+      <ion-item>
+          <ion-label floating>
+            <ion-icon name="contact"></ion-icon> Nombre de la Cancha
+          </ion-label>
+          <ion-input [(ngModel)]="field.name" type="text"></ion-input>
+        </ion-item>
+    <ion-item>
+      <ion-label floating> 
+        <ion-icon name="football"></ion-icon> Complejo
+      </ion-label>
+      <ion-select [(ngModel)]="field.complexId">
+        <div  *ngFor="let complex of complexes">
+            <ion-option value="{{complex.id}}">{{complex.name}}</ion-option>
+        </div>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>
+        <ion-icon name="options"></ion-icon> Tipo
+      </ion-label>
+      <ion-select [(ngModel)]="field.type">
+        <ion-option value="open-air">Al Aire Libre</ion-option>
+        <ion-option value="roof">Bajo Techo</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>
+        <ion-icon name="leaf"></ion-icon> Grama
+      </ion-label>
+      <ion-select [(ngModel)]="field.grass">
+        <ion-option value="natural">Natural</ion-option>
+        <ion-option value="syntetic">Sintetica</ion-option>
+        <ion-option value="dirt">Tierra</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label floating>
+            <ion-icon name="people"></ion-icon> Jugadores por Equipo
+          </ion-label>
+          <ion-input [(ngModel)]="field.teamPlayers" type="number"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label floating>
+            <ion-icon name="cash"></ion-icon> Precio por Hora
+          </ion-label>
+          <ion-input [(ngModel)]="field.price" type="number"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <div class="save-buttons">
+      <hr>
+      <ion-row>
+        <ion-col>
+          <button ion-button block round (click)="saveField()">Guardar</button>
+        </ion-col>
+        <ion-col>
+          <button ion-button block round color="danger" (click)="deleteField()">Cancelar</button>
+        </ion-col>
+      </ion-row>
+    </div>
+
+  </ion-list>
 
 </ion-content>

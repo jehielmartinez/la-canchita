@@ -1,3 +1,4 @@
+import { AdminHomePage } from './../admin-home/admin-home';
 import { NewFieldPage } from './../new-field/new-field';
 import { DatabaseProvider } from './../../providers/database/database';
 import { Component } from '@angular/core';
@@ -24,18 +25,20 @@ import cities from '../../app/cities';
 export class NewComplexPage {
   imageId;
   currentUser: User;
-  complexImages: any;
+  complexImages = [];
   complex: Complex = {
     id: Date.now().toString(),
-    name: '',
-    phone: '',
-    address: '',
-    city: '',
-    country: '',
-    openAt: '',
-    closeAt: '',
-    options: '',
-    workingDays: '',
+    name: null,
+    phone: null,
+    address: null,
+    city: null,
+    country: null,
+    weekOpenAt: null,
+    weekCloseAt: null,
+    weekEndOpenAt: null,
+    weekEndCloseAt: null,
+    options: null,
+    workingDays: null,
   }
   countries = ['Guatemala', 'Costa Rica', 'Honduras', 'Nicaragua', 'El Salvador', 'Panama'];
   cities = cities;
@@ -63,14 +66,10 @@ export class NewComplexPage {
     });
   }
 
-  goToNewField(){
-    this.saveComplex();
-    this.navCtrl.setRoot(NewFieldPage);
-  }
-
   getComplexImages() {
     this.databaseProvider.getComplexImages(this.currentUser.uid, this.complex.id).valueChanges().subscribe((data) => {
       this.complexImages = data;
+      console.log(this.complexImages);
     }, (err) => {
       console.log(err);
     });
@@ -116,12 +115,37 @@ export class NewComplexPage {
     };
   }
 
-  saveComplex() {
-    this.databaseProvider.saveComplex(this.currentUser.uid, this.complex).catch(() => {
-      console.log('Complex Saved');
-    }).catch((err) => {
+  async deleteComplex() {
+    try {
+      await this.complexImages.forEach(e => {
+        this.databaseProvider.deleteComplexImagesSt(e.imageId + '.jpg').subscribe(() => {
+          console.log(`Deleted Image: ${this.imageId}`);
+        }, (err) => {
+          console.log(err);
+        });
+      });
+      this.databaseProvider.deleteComplex(this.currentUser.uid, this.complex.id).then(() => {
+        console.log('Complex successfuly deleted');
+        this.navCtrl.setRoot(AdminHomePage);
+      }).catch((err) => {
+        console.log(err);
+      });
+    } catch (err) {
       console.log(err);
-    });
+    };
+  }
+
+  saveComplex() {
+    if (!this.complex.name) {
+      this.deleteComplex();
+    } else {
+      this.databaseProvider.saveComplex(this.currentUser.uid, this.complex).then(() => {
+        console.log('Complex Saved');
+        this.navCtrl.setRoot(AdminHomePage);
+      }).catch((err) => {
+        console.log(err);
+      });
+    }
   }
 
 

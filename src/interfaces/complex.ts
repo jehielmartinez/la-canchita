@@ -4,8 +4,10 @@ export interface Complex {
     phone: string;
     description?: string;
     address: string;
-    openAt: any;
-    closeAt: any;
+    weekOpenAt?: any;
+    weekCloseAt?: any;
+    weekEndOpenAt?: any;
+    weekEndCloseAt?: any;
     images?: any;
     options?: any;
     workingDays: any;

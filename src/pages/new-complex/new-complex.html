@@ -17,7 +17,7 @@
   <ion-row>
     <ion-slides pager slidesPerView="1">
       <ion-slide *ngFor="let img of complexImages">
-        <img src="{{img.imageUrl}}" class="thumb-img" imageViewer/>
+        <img src="{{img.imageUrl}}" class="thumb-img" imageViewer />
       </ion-slide>
     </ion-slides>
   </ion-row>
@@ -32,7 +32,7 @@
     </ion-col>
   </ion-row>
 
-  <ion-list>
+  <ion-list class="form-view">
     <ion-item>
       <ion-label floating>
         <ion-icon name="contact"></ion-icon> Nombre del Complejo
@@ -80,50 +80,62 @@
         <ion-option value="car">Parqueo Disponible</ion-option>
         <ion-option value="beer">Bebidas Alcoholicas</ion-option>
         <ion-option value="pizza">Cafeteria</ion-option>
+        <ion-option value="shower">Ducha Disponible</ion-option>
       </ion-select>
     </ion-item>
-
-    <ion-item>
-      <ion-label floating>
-        <ion-icon name="calendar"></ion-icon> Dias Laborales
-      </ion-label>
-      <ion-select [(ngModel)]="complex.workingDays" multiple="true">
-        <ion-option value="monday">Lunes</ion-option>
-        <ion-option value="tuesday">Martes</ion-option>
-        <ion-option value="wednesday">Miercoles</ion-option>
-        <ion-option value="thursday">Jueves</ion-option>
-        <ion-option value="friday">Viernes</ion-option>
-        <ion-option value="saturday">Sabado</ion-option>
-        <ion-option value="sunday">Domingo</ion-option>
-
-      </ion-select>
-    </ion-item>
-
+    <p class="p-text">Lunes A Jueves</p>
     <ion-row>
-      <ion-col>
+      <ion-col col-6>
         <ion-item>
           <ion-label floating>
             <ion-icon name="time"></ion-icon> Apertura
           </ion-label>
-          <ion-datetime [(ngModel)]="complex.openAt" displayFormat="h:mm A" pickerFormat="h mm A"></ion-datetime>
+          <ion-datetime [(ngModel)]="complex.weekEndOpenAt" displayFormat="h:mm A" pickerFormat="h mm A"></ion-datetime>
         </ion-item>
       </ion-col>
-      <ion-col>
+      <ion-col col-6>
         <ion-item>
           <ion-label floating>
             <ion-icon name="time"></ion-icon> Cierre
           </ion-label>
-          <ion-datetime [(ngModel)]="complex.closeAt" displayFormat="h:mm A" pickerFormat="h mm A"></ion-datetime>
+          <ion-datetime [(ngModel)]="complex.weekEndCloseAt" displayFormat="h:mm A" pickerFormat="h mm A"></ion-datetime>
         </ion-item>
       </ion-col>
     </ion-row>
+
+    <p class="p-text">Viernes a Domingo</p>
+    <ion-row>
+      <ion-col col-6>
+        <ion-item>
+          <ion-label floating>
+            <ion-icon name="time"></ion-icon> Apertura
+          </ion-label>
+          <ion-datetime [(ngModel)]="complex.weekOpenAt" displayFormat="h:mm A" pickerFormat="h mm A"></ion-datetime>
+        </ion-item>
+      </ion-col>
+      <ion-col col-6>
+        <ion-item>
+          <ion-label floating>
+            <ion-icon name="time"></ion-icon> Cierre
+          </ion-label>
+          <ion-datetime [(ngModel)]="complex.weekCloseAt" displayFormat="h:mm A" pickerFormat="h mm A"></ion-datetime>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
   </ion-list>
-  <ion-row>
-    <ion-col>
-      <button ion-button block round (click)="goToNewField()">Guardar</button>
-    </ion-col>
-    <ion-col>
-      <button ion-button block round (click)="saveComplex()" color="danger">Cancelar</button>
-    </ion-col>
-  </ion-row>
-</ion-content> 
+
+  <div class="save-buttons">
+    <hr>
+    <ion-row>
+      <ion-col>
+        <button ion-button block round (click)="saveComplex()">Guardar</button>
+      </ion-col>
+      <ion-col>
+        <button ion-button block round (click)="deleteComplex()" color="danger">Cancelar</button>
+      </ion-col>
+    </ion-row>
+  </div>
+
+
+</ion-content>

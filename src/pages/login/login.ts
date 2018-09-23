@@ -1,3 +1,4 @@
+import { AdminHomePage } from './../admin-home/admin-home';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
@@ -58,7 +59,7 @@ export class LoginPage {
         });
         toast.present();
         if(user.type = 'admin'){
-          this.navCtrl.setRoot(NewComplexPage);
+          this.navCtrl.setRoot(AdminHomePage);
         }else{
           this.navCtrl.setRoot(HomePage);
         }

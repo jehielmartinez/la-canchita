@@ -10,12 +10,14 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title><ion-icon name="football"></ion-icon> La Canchita</ion-title>
+    <ion-title>
+      <ion-icon name="football"></ion-icon> La Canchita
+    </ion-title>
   </ion-navbar>
   <ion-segment [(ngModel)]="segment">
-    <ion-segment-button value="complexes">Complejos</ion-segment-button>
-    <ion-segment-button value="fields">Canchas</ion-segment-button>
-    <ion-segment-button value="reservation">Reservaciones</ion-segment-button>
+    <ion-segment-button value="complexes">Mis Complejos</ion-segment-button>
+    <ion-segment-button value="fields">Mis Canchas</ion-segment-button>
+    <ion-segment-button value="reservations">Reservaciones</ion-segment-button>
   </ion-segment>
 
 </ion-header>
@@ -24,17 +26,42 @@
 <ion-content padding>
   <div *ngIf="segment === 'complexes'">
     <ion-card *ngFor="let complex of userComplexes">
-      <img src="{{getComplexImage(complex.id)}}">
+      <img src="{{getAllComplexImages(complex.id)[0].imageUrl}}">
       <ion-card-content>
-
         <ion-row>
           <ion-col col-12>
-              <!-- <h1>{{complex.name}}</h1> -->
-              <p (click)="presentActionSheet()" class="card-title">{{complex.name}}</p>
+            <p (press)="presentActionSheet(complex.id)" class="card-title">{{complex.name}}</p>
           </ion-col>
         </ion-row>
-
       </ion-card-content>
     </ion-card>
   </div>
+
+  <div *ngIf="segment === 'fields'">
+    <ion-list>
+      <ion-item-sliding *ngFor= "let field of userFields">
+        <ion-item>
+          <ion-icon name="football" item-start></ion-icon>
+          <h2>{{field.name}}</h2>
+          <h5 style="color: gray">{{field.complex.name}}</h5>
+        </ion-item>
+        <ion-item-options side="right">
+          <button ion-button (click)="deleteConfirm(field.id, 'field')" color="danger">
+            <ion-icon name="trash"></ion-icon>
+            Eliminar
+          </button>
+          <button ion-button color="primary">
+            <ion-icon name="create"></ion-icon>
+            Editar
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
+
+  <ion-fab right bottom *ngIf="segment != 'reservations'">
+    <button (click)="goToNew()" color="danger" ion-fab>
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
 </ion-content>

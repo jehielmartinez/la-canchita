@@ -14,3 +14,15 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+.save-buttons{
+    position: fixed;
+    bottom: 0px;
+    left: 10px;
+    right: 10px;
+    background-color: white;
+    padding-bottom: 10px;
+    z-index: 10;
+}
+.form-view{
+    margin-bottom: 70px;
+}

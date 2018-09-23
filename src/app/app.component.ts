@@ -1,3 +1,4 @@
+import { NewFieldPage } from './../pages/new-field/new-field';
 import { AdminHomePage } from './../pages/admin-home/admin-home';
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
@@ -25,7 +26,8 @@ export class MyApp {
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Home', component: HomePage },
-      { title: 'Complejo', component: NewComplexPage }
+      { title: 'Complejo', component: NewComplexPage},
+      { title: 'Admin Home', component: AdminHomePage},
     ];
 
   }

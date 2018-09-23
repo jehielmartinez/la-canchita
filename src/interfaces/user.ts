@@ -8,4 +8,5 @@ export interface User {
     type: string;
     images?: any;
     complexes?:any;
+    fields?: any;
   }

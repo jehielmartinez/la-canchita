@@ -20,19 +20,36 @@ export class DatabaseProvider {
   getUserById(uid){
     return this.firebaseDatabase.object('users/' + uid);
   }
+  //Complex Protocols
+  saveComplex(uid, complex){
+    return this.firebaseDatabase.object('users/' + uid + '/complexes/' + complex.id).update(complex);
+  }
+  deleteComplex(uid, complexId){
+    return this.firebaseDatabase.object('users/' + uid + '/complexes/' + complexId).remove();
+  }
+  uploadImage(image_name, image){
+    return this.fireStorage.ref(`images/${image_name}`).putString(image, 'data_url');
+  }
+  getDownloadUrl(image_name){
+    return this.fireStorage.ref(`images/${image_name}`).getDownloadURL();
+  }
   getComplexImages(uid, complexId){
     return this.firebaseDatabase.list('users/' + uid + '/complexes/' + complexId + '/images/');
   }
-  uploadImage(imageId, image){
-    return this.fireStorage.ref('images/' + imageId).putString(image, 'data_url');
+  deleteComplexImagesDb(uid, complexId){
+    return this.firebaseDatabase.list('users/' + uid + '/complexes/' + complexId + '/images/').remove();
   }
-  getDownloadUrl(image_name){
-    return this.fireStorage.ref('/images/' + image_name).getDownloadURL();
+  deleteComplexImagesSt(image_name){
+    return this.fireStorage.ref(`images/${image_name}`).delete();
   }
   updateComplexImages(imageURL, uid){
     return this.firebaseDatabase.object('users/' + uid + '/complexes/' + imageURL.complexId + '/images/' + imageURL.imageId).set(imageURL);
   }
-  saveComplex(uid, complex){
-    return this.firebaseDatabase.object('users/' + uid + '/complexes/' + complex.id).update(complex);
+  //Field Protocols
+  saveField(uid, field){
+    return this.firebaseDatabase.object('users/' + uid + '/fields/' + field.id).update(field);
+  }
+  deleteField(uid, fieldId){
+    return this.firebaseDatabase.object('users/' + uid + '/fields/' + fieldId).remove();
   }
 }

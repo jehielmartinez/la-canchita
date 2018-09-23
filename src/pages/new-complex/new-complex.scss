@@ -12,4 +12,16 @@ page-new-complex {
     .hidden{
         display: none;
     }
+    .p-text{
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        color: rgb(155, 155, 155);
+        margin: 14px 0px 0px 0px;
+        position: relative;
+        bottom: -17px;
+        z-index: 5;
+        font-size: 15px;
+
+    }
 }
