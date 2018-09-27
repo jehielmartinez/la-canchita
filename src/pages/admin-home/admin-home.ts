@@ -1,6 +1,7 @@
+import { DetailComplexPage } from './../detail-complex/detail-complex';
 import { AuthenticationProvider } from './../../providers/authentication/authentication';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController, ActionSheetController, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController, ActionSheetController, AlertController, ModalController } from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
 import { User } from '../../interfaces/user';
 import { LoginPage } from '../login/login';
@@ -23,13 +24,13 @@ export class AdminHomePage {
   currentUser: User;
   segment = 'complexes';
   userComplexes;
-  userFields;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private authProvider: AuthenticationProvider,
     private databaseProvider: DatabaseProvider,
     public actionSheetCtrl: ActionSheetController,
     public alertCtrl: AlertController,
+    public modalCtrl: ModalController,
     public toastCtrl: ToastController) {
 
     this.authProvider.getStatus().subscribe((session) => {
@@ -39,7 +40,6 @@ export class AdminHomePage {
         this.databaseProvider.getUserById(session.uid).valueChanges().subscribe((user: any) => {
           this.currentUser = user;
           this.userComplexes = this.getUserComplexes();
-          this.userFields = this.getUserFields();
           console.log(this.currentUser);
         }, (err) => {
           console.log(err);
@@ -63,13 +63,6 @@ export class AdminHomePage {
     }
   }
 
-  getUserFields() {
-    if (!this.currentUser.fields) {
-      return
-    } else {
-      return Object.keys(this.currentUser.fields).map(i => this.currentUser.fields[i]);
-    }
-  }
 
   presentActionSheet(complexId) {
     const actionSheet = this.actionSheetCtrl.create({
@@ -80,6 +73,7 @@ export class AdminHomePage {
           icon: 'create',
           handler: () => {
             console.log('Editar Complejo');
+            this.editComplex(complexId);
           }
         },
         {
@@ -111,8 +105,8 @@ export class AdminHomePage {
           handler: () => {
             if (type == 'complex') {
               this.deleteComplex(id);
-            } else if (type == 'field'){
-              this.deleteField(id);
+            } else if (type == 'field') {
+              // this.deleteField(id);
             }
           }
         }
@@ -123,38 +117,48 @@ export class AdminHomePage {
 
   async deleteComplex(complexId) {
     const complexImages = this.getAllComplexImages(complexId);
-    try {
-      await complexImages.forEach(e => {
-        this.databaseProvider.deleteComplexImagesSt(e.imageId + '.jpg').subscribe(() => {
-          console.log(`Deleted Image: ${e.imageId}`);
-        }, (err) => {
+    if (complexImages.length == 0) {
+      this.navCtrl.setRoot(AdminHomePage);
+    } else {
+      try {
+        await complexImages.forEach(e => {
+          this.databaseProvider.deleteComplexImagesSt(e.imageId + '.jpg').subscribe(() => {
+            console.log(`Deleted Image: ${e.imageId}`);
+          }, (err) => {
+            console.log(err);
+          });
+        });
+        this.databaseProvider.deleteComplex(this.currentUser.uid, complexId).then(() => {
+          console.log('Complex successfuly deleted');
+          this.navCtrl.setRoot(AdminHomePage);
+        }).catch((err) => {
           console.log(err);
         });
-      });
-      this.databaseProvider.deleteComplex(this.currentUser.uid, complexId).then(() => {
-        console.log('Complex successfuly deleted');
-        this.navCtrl.setRoot(AdminHomePage);
-      }).catch((err) => {
-        console.log(err);
-      });
-    } catch{};
-  }
-
-
-  goToNew() {
-    if (this.segment == 'complexes') {
-      this.navCtrl.setRoot(NewComplexPage);
-    } else if (this.segment == 'fields') {
-      this.navCtrl.setRoot(NewFieldPage);
+      } catch{ };
     }
   }
 
-  deleteField(fieldId) {
-    this.databaseProvider.deleteField(this.currentUser.uid, fieldId).then(() => {
-      console.log('Field Deleted');
-    }).catch((err) => {
-      console.log(err);
-    });
+
+  goToNew(select) {
+    if (select == 'complex') {
+      this.navCtrl.setRoot(NewComplexPage, 'new');
+    } else if (select == 'field') {
+      this.navCtrl.setRoot(NewFieldPage, 'new');
+    }
+  }
+
+
+  presentDetailModal(field) {
+    let detailModal = this.modalCtrl.create(DetailComplexPage, field);
+    // detailModal.present();
+  }
+
+  goToDetailComplex(complexId) {
+    this.navCtrl.push(DetailComplexPage, complexId)
+  }
+
+  editComplex(complexId){
+    this.navCtrl.push(NewComplexPage, complexId);
   }
 
 

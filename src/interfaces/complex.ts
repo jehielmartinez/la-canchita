@@ -13,4 +13,6 @@ export interface Complex {
     workingDays: any;
     city: string;
     country: string;
+    fields?: any;
+    userId?: string;
   }

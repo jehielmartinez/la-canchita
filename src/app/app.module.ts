@@ -1,3 +1,4 @@
+import { DetailComplexPage } from './../pages/detail-complex/detail-complex';
 import { AdminHomePage } from './../pages/admin-home/admin-home';
 import { NewFieldPage } from './../pages/new-field/new-field';
 import { Camera } from '@ionic-native/camera';
@@ -42,7 +43,8 @@ export const firebaseConfig = {
     LoginPage,
     NewComplexPage,
     NewFieldPage,
-    AdminHomePage
+    AdminHomePage,
+    DetailComplexPage
   ],
   imports: [
     BrowserModule,
@@ -62,7 +64,8 @@ export const firebaseConfig = {
     LoginPage,
     NewComplexPage,
     NewFieldPage,
-    AdminHomePage
+    AdminHomePage,
+    DetailComplexPage
   ],
   providers: [
     StatusBar,

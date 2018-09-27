@@ -39,9 +39,11 @@ export class NewComplexPage {
     weekEndCloseAt: null,
     options: null,
     workingDays: null,
+    userId: null
   }
   countries = ['Guatemala', 'Costa Rica', 'Honduras', 'Nicaragua', 'El Salvador', 'Panama'];
   cities = cities;
+  editing = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private authProvider: AuthenticationProvider,
@@ -55,7 +57,12 @@ export class NewComplexPage {
       } else {
         this.databaseProvider.getUserById(session.uid).valueChanges().subscribe((user: any) => {
           this.currentUser = user;
-          this.getComplexImages();
+          if (navParams.data !== 'new') {
+            this.getComplex(navParams.data);
+            this.editing = true;
+          } else {
+            this.getComplexImages();
+          }
           console.log(this.currentUser);
         }, (err) => {
           console.log(err);
@@ -64,6 +71,15 @@ export class NewComplexPage {
     }, (err) => {
       console.log(err);
     });
+  }
+
+  getComplex(complexId) {
+    this.databaseProvider.getComplexById(this.currentUser.uid, complexId).valueChanges().subscribe((data: Complex) => {
+      this.complex = data;
+      this.getComplexImages();
+    }, (err) => {
+      console.log(err);
+    })
   }
 
   getComplexImages() {
@@ -80,6 +96,12 @@ export class NewComplexPage {
   }
 
   async uploadImage(source) {
+    let toast = this.toastCtrl.create({
+      message: 'Su primer Imagen debe ser un Logotipo',
+      duration: 3000,
+      position: 'bottom'
+    });
+    toast.present();
     try {
       let cameraOptions: CameraOptions = {
         quality: 80,
@@ -116,29 +138,41 @@ export class NewComplexPage {
   }
 
   async deleteComplex() {
-    try {
-      await this.complexImages.forEach(e => {
-        this.databaseProvider.deleteComplexImagesSt(e.imageId + '.jpg').subscribe(() => {
-          console.log(`Deleted Image: ${this.imageId}`);
-        }, (err) => {
+    if (this.editing == true) {
+      this.navCtrl.setRoot(AdminHomePage);
+    } else {
+      try {
+        await this.complexImages.forEach(e => {
+          this.databaseProvider.deleteComplexImagesSt(e.imageId + '.jpg').subscribe(() => {
+            console.log(`Deleted Image: ${this.imageId}`);
+          }, (err) => {
+            console.log(err);
+          });
+        });
+        this.databaseProvider.deleteComplex(this.currentUser.uid, this.complex.id).then(() => {
+          console.log('Complex successfuly deleted');
+          this.navCtrl.setRoot(AdminHomePage);
+        }).catch((err) => {
           console.log(err);
         });
-      });
-      this.databaseProvider.deleteComplex(this.currentUser.uid, this.complex.id).then(() => {
-        console.log('Complex successfuly deleted');
-        this.navCtrl.setRoot(AdminHomePage);
-      }).catch((err) => {
+      } catch (err) {
         console.log(err);
-      });
-    } catch (err) {
-      console.log(err);
-    };
+      };
+    }
   }
 
   saveComplex() {
     if (!this.complex.name) {
       this.deleteComplex();
+    } else if (this.complexImages.length == 0) {
+      let toast = this.toastCtrl.create({
+        message: 'Debe subir al menos una Imagen',
+        duration: 3000,
+        position: 'bottom'
+      });
+      toast.present();
     } else {
+      this.complex.userId = this.currentUser.uid;
       this.databaseProvider.saveComplex(this.currentUser.uid, this.complex).then(() => {
         console.log('Complex Saved');
         this.navCtrl.setRoot(AdminHomePage);

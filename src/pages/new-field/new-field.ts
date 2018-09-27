@@ -30,7 +30,6 @@ export class NewFieldPage {
     grass: null,
     price: null,
     teamPlayers: null,
-    complex: null,
     name: null,
   }
 
@@ -44,6 +43,9 @@ export class NewFieldPage {
       } else {
         this.databaseProvider.getUserById(session.uid).valueChanges().subscribe((user: any) => {
           this.currentUser = user;
+          if (navParams.data !== 'new'){
+            this.field = navParams.data;
+          };
           this.complexes = this.getUserComplexes();
           console.log(this.currentUser);
         }, (err) => {
@@ -68,15 +70,11 @@ export class NewFieldPage {
       return Object.keys(this.currentUser.complexes).map(i => this.currentUser.complexes[i]);
     }
   }
+
   saveField() {
     if (!this.field.name) {
       this.deleteField();
     } else {
-      this.complexes.forEach(element => {
-        if (element.id == this.field.complexId) {
-          this.field.complex = element;
-        }
-      });
       this.databaseProvider.saveField(this.currentUser.uid, this.field).then(() => {
         console.log('Field Saved');
         this.navCtrl.setRoot(AdminHomePage);
@@ -86,13 +84,18 @@ export class NewFieldPage {
     }
 
   }
+  
   deleteField() {
-    this.databaseProvider.deleteField(this.currentUser.uid, this.field.id).then(() => {
+    this.databaseProvider.deleteField(this.currentUser.uid, this.field).then(() => {
       console.log('Field Deleted');
       this.navCtrl.setRoot(AdminHomePage);
     }).catch((err) => {
       console.log(err);
     })
+  }
+
+  cancel(){
+    this.navCtrl.setRoot(AdminHomePage);
   }
 
 

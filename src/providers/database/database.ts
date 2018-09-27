@@ -27,6 +27,9 @@ export class DatabaseProvider {
   deleteComplex(uid, complexId){
     return this.firebaseDatabase.object('users/' + uid + '/complexes/' + complexId).remove();
   }
+  getComplexById(uid, complexId){
+    return this.firebaseDatabase.object('users/' + uid + '/complexes/' + complexId);
+  }
   uploadImage(image_name, image){
     return this.fireStorage.ref(`images/${image_name}`).putString(image, 'data_url');
   }
@@ -47,9 +50,10 @@ export class DatabaseProvider {
   }
   //Field Protocols
   saveField(uid, field){
-    return this.firebaseDatabase.object('users/' + uid + '/fields/' + field.id).update(field);
+    return this.firebaseDatabase.object('users/' + uid + '/complexes/' + field.complexId + '/fields/' + field.id).update(field);
   }
-  deleteField(uid, fieldId){
-    return this.firebaseDatabase.object('users/' + uid + '/fields/' + fieldId).remove();
+
+  deleteField(uid, field){
+    return this.firebaseDatabase.object('users/' + uid + '/complexes/' + field.complexId + '/fields/' + field.id).remove();
   }
 }
