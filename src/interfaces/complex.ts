@@ -10,9 +10,10 @@ export interface Complex {
     weekEndCloseAt?: any;
     images?: any;
     options?: any;
-    workingDays: any;
     city: string;
     country: string;
     fields?: any;
     userId?: string;
+    email?: string;
+    web?: string;
   }

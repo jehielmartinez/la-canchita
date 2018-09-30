@@ -1,3 +1,4 @@
+import { CallNumber } from '@ionic-native/call-number';
 import { AuthenticationProvider } from './../../providers/authentication/authentication';
 import { DatabaseProvider } from './../../providers/database/database';
 import { Field } from './../../interfaces/field';
@@ -29,15 +30,15 @@ export class DetailComplexPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController,
     private databaseProvider: DatabaseProvider,
-    private authProvider: AuthenticationProvider) {
+    private authProvider: AuthenticationProvider,
+    private callNumber: CallNumber) {
     this.authProvider.getStatus().subscribe((session) => {
       if (session == null) {
         this.navCtrl.setRoot(LoginPage);
       } else {
         this.databaseProvider.getUserById(session.uid).valueChanges().subscribe((user: any) => {
           this.currentUser = user;
-          this.complexId = navParams.data;
-          this.getComplex(this.complexId);
+          this.getComplex(navParams.data.userId, navParams.data.complexId);
         }, (err) => {
           console.log(err);
         });
@@ -47,8 +48,8 @@ export class DetailComplexPage {
     });
   }
 
-  getComplex(complexId) {
-    this.databaseProvider.getComplexById(this.currentUser.uid, complexId).valueChanges().subscribe((data: Complex) => {
+  getComplex(uid, complexId) {
+    this.databaseProvider.getComplexById(uid, complexId).valueChanges().subscribe((data: Complex) => {
       this.complex = data;
       this.complexFields = this.getComplexFields();
       this.getAllComplexImages();
@@ -83,6 +84,12 @@ export class DetailComplexPage {
 
   editField(field: Field) {
     this.navCtrl.setRoot(NewFieldPage, field);
+  }
+
+  call(number){
+    this.callNumber.callNumber(number, true)
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
   }
 
   ionViewDidLoad() {

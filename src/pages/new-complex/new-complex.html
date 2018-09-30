@@ -72,14 +72,28 @@
 
     <ion-item>
       <ion-label floating>
+        <ion-icon name="mail"></ion-icon> Email
+      </ion-label>
+      <ion-input [(ngModel)]="complex.email" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>
+        <ion-icon name="globe"></ion-icon> Web
+      </ion-label>
+      <ion-input [(ngModel)]="complex.web" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>
         <ion-icon name="options"></ion-icon> Caracteristicas
       </ion-label>
       <ion-select [(ngModel)]="complex.options" multiple="true">
         <ion-option value="wifi">Wifi Disponible</ion-option>
-        <ion-option value="no-smoking">Prohibido Fumar</ion-option>
+        <ion-option value="smoking-off">Prohibido Fumar</ion-option>
         <ion-option value="car">Parqueo Disponible</ion-option>
         <ion-option value="beer">Bebidas Alcoholicas</ion-option>
-        <ion-option value="pizza">Cafeteria</ion-option>
+        <ion-option value="food">Cafeteria</ion-option>
         <ion-option value="shower">Ducha Disponible</ion-option>
       </ion-select>
     </ion-item>

@@ -38,8 +38,9 @@ export class NewComplexPage {
     weekEndOpenAt: null,
     weekEndCloseAt: null,
     options: null,
-    workingDays: null,
-    userId: null
+    userId: null,
+    email: null,
+    web: null
   }
   countries = ['Guatemala', 'Costa Rica', 'Honduras', 'Nicaragua', 'El Salvador', 'Panama'];
   cities = cities;
@@ -99,7 +100,7 @@ export class NewComplexPage {
     let toast = this.toastCtrl.create({
       message: 'Su primer Imagen debe ser un Logotipo',
       duration: 3000,
-      position: 'bottom'
+      position: 'top'
     });
     toast.present();
     try {

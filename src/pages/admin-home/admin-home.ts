@@ -1,3 +1,4 @@
+import { HomePage } from './../home/home';
 import { DetailComplexPage } from './../detail-complex/detail-complex';
 import { AuthenticationProvider } from './../../providers/authentication/authentication';
 import { Component } from '@angular/core';
@@ -39,6 +40,9 @@ export class AdminHomePage {
       } else {
         this.databaseProvider.getUserById(session.uid).valueChanges().subscribe((user: any) => {
           this.currentUser = user;
+          if (this.currentUser.type !== 'admin'){
+            this.navCtrl.setRoot(HomePage);
+          }
           this.userComplexes = this.getUserComplexes();
           console.log(this.currentUser);
         }, (err) => {
@@ -147,14 +151,11 @@ export class AdminHomePage {
     }
   }
 
-
-  presentDetailModal(field) {
-    let detailModal = this.modalCtrl.create(DetailComplexPage, field);
-    // detailModal.present();
-  }
-
-  goToDetailComplex(complexId) {
-    this.navCtrl.push(DetailComplexPage, complexId)
+  goToDetailComplex(_complexId) {
+    this.navCtrl.push(DetailComplexPage, {
+      userId: this.currentUser.uid,
+      complexId: _complexId,
+    });
   }
 
   editComplex(complexId){

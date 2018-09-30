@@ -25,15 +25,18 @@
 <ion-content padding>
   <div *ngIf="segment === 'complexes'">
     <ion-card *ngFor="let complex of userComplexes; let i=index">
-      <ion-slides pager>
-        <ion-slide>
-          <img (click)="goToDetailComplex(complex.id)" src="{{getAllComplexImages(complex.id)[i].imageUrl}}">
-        </ion-slide>
-      </ion-slides>
+      
+          <img (click)="goToDetailComplex(complex.id)" src="{{getAllComplexImages(complex.id)[0].imageUrl}}">
+        
       <ion-card-content>
         <ion-row>
-          <ion-col col-12>
-            <p (press)="presentActionSheet(complex.id)" class="card-title">{{complex.name}}</p>
+          <ion-col col-4 class="icons">
+          <div *ngFor="let option of complex.options">
+            <ion-icon float-start class="mdi mdi-{{option}}"></ion-icon>
+          </div>
+          </ion-col>
+          <ion-col col-8>
+            <p (press)="presentActionSheet(complex.id)" class="card-title">{{complex.name | titlecase}}</p>
           </ion-col>
         </ion-row>
       </ion-card-content>

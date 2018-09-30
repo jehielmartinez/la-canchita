@@ -1,7 +1,8 @@
+import { AuthenticationProvider } from './../providers/authentication/authentication';
 import { NewFieldPage } from './../pages/new-field/new-field';
 import { AdminHomePage } from './../pages/admin-home/admin-home';
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform } from 'ionic-angular';
+import { Nav, Platform, App } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
@@ -16,11 +17,13 @@ import { NewComplexPage } from '../pages/new-complex/new-complex';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = AdminHomePage;
+  rootPage: any = HomePage;
 
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
+    private authService: AuthenticationProvider,
+    private app: App) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -30,6 +33,13 @@ export class MyApp {
       { title: 'Admin Home', component: AdminHomePage},
     ];
 
+  }
+  logout() {
+    this.authService.logout().then(() => {
+      this.app.getRootNav().setRoot(LoginPage);
+    }).catch((error) => {
+      console.log(error);
+    })
   }
 
   initializeApp() {

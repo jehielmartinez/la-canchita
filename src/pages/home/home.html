@@ -3,17 +3,27 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Home</ion-title>
+    <ion-title>
+      <ion-icon class="mdi mdi-soccer"></ion-icon> La Canchita
+    </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-    <ion-card>
-        <img src="img/nin-live.png"/>
-        <ion-card-content>
-          <ion-card-title>
-            Canchas El Golazo
-            </ion-card-title>
-        </ion-card-content>
-      </ion-card>
+  <ion-card *ngFor="let complex of complexes; let i=index">
+    <img-loader (click)="goToDetailComplex(complex.userId, complex.id)" src="{{getAllComplexImages(complex)[0].imageUrl}}"
+      useImg></img-loader>
+    <ion-card-content>
+      <ion-row>
+        <ion-col col-4 class="icons">
+          <div *ngFor="let option of complex.options">
+            <ion-icon float-start class="mdi mdi-{{option}}"></ion-icon>
+          </div>
+        </ion-col>
+        <ion-col col-8>
+          <p class="card-title">{{complex.name | titlecase}}</p>
+        </ion-col>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

@@ -30,6 +30,9 @@ export class DatabaseProvider {
   getComplexById(uid, complexId){
     return this.firebaseDatabase.object('users/' + uid + '/complexes/' + complexId);
   }
+  getAllAdmins(){
+    return this.firebaseDatabase.list('users/', ref => ref.orderByChild('type').equalTo('admin'));
+  }
   uploadImage(image_name, image){
     return this.fireStorage.ref(`images/${image_name}`).putString(image, 'data_url');
   }

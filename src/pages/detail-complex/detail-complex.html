@@ -8,12 +8,7 @@
 
   <ion-navbar>
     <ion-title *ngIf="complex">{{complex.name}}</ion-title>
-    <ion-buttons start>
-      <button ion-button (click)="dismiss()">
-        <span ion-text color="primary" showWhen="ios">Cancel</span>
-        <ion-icon name="md-close" showWhen="android,windows"></ion-icon>
-      </button>
-    </ion-buttons>
+    
 
   </ion-navbar>
 
@@ -27,24 +22,96 @@
         <img src="{{image.imageUrl}}">
       </ion-slide>
     </ion-slides>
-    <h5>{{complex.address}}</h5>
-    <h5>{{complex.phone}}</h5>
+
+    <ion-list no-lines>
+      <ion-item-divider color="light">Contacto</ion-item-divider>
+
+      <ion-item-sliding>
+        <ion-item>
+          <ion-icon class="mdi mdi-map-legend" item-start></ion-icon>
+          <h2 text-wrap>{{complex.address}}, {{complex.city}}, {{complex.country}}</h2>
+          <ion-icon class="mdi mdi-menu-left" item-end></ion-icon>
+        </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="danger">
+            <ion-icon class="mdi mdi-navigation"></ion-icon>
+            Navegar
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+
+      <ion-item-sliding>
+        <ion-item>
+          <ion-icon class="mdi mdi-phone" item-start></ion-icon>
+          <h2>{{complex.phone}}</h2>
+          <ion-icon class="mdi mdi-menu-left" item-end></ion-icon>
+        </ion-item>
+        <ion-item-options side="right">
+          <button ion-button (click)="call(complex.phone)" color="primary">
+            <ion-icon class="mdi mdi-phone-in-talk"></ion-icon>
+            Llamar
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+
+      <ion-item>
+          <ion-icon class="mdi mdi-calendar-clock" item-start></ion-icon>
+          <h2 text-wrap>Lunes a Jueves desde {{complex.weekOpenAt}} hasta las {{complex.weekCloseAt}}</h2>
+      </ion-item>
+
+      <ion-item>
+          <ion-icon class="mdi mdi-calendar" item-start></ion-icon>
+          <h2 text-wrap>Viernes a Sabado desde {{complex.weekEndOpenAt}} hasta las {{complex.weekEndCloseAt}}</h2>
+      </ion-item>
+
+      <ion-item>
+          <ion-icon class="mdi mdi-email" item-start></ion-icon>
+          <h2 text-wrap>lacanchita@gmail.com</h2>
+      </ion-item>
+
+      <ion-item>
+          <ion-icon class="mdi mdi-web" item-start></ion-icon>
+          <h2 text-wrap>www.lacanchita.com</h2>
+      </ion-item>
+
+      <ion-item-divider color="light">Caracteristicas</ion-item-divider>
+
+      <ion-item margin-top *ngFor="let option of complex.options">
+        <ion-icon class="mdi mdi-{{option}}" item-start></ion-icon>
+        <div [ngSwitch]="option">
+          <h2 *ngSwitchCase="'wifi'">Wifi Disponible</h2>
+          <h2 *ngSwitchCase="'car'">Parqueo Disponible</h2>
+          <h2 *ngSwitchCase="'smoking-off'">Prohibido Fumar</h2>
+          <h2 *ngSwitchCase="'shower-head'">Duchas Disponibles</h2>
+          <h2 *ngSwitchCase="'food'">Cafeteria</h2>
+          <h2 *ngSwitchCase="'beer'">Bebidas Alcoholicas</h2>
+        </div>
+      </ion-item>
+
+    </ion-list>
+
 
     <ion-list *ngIf="complexFields">
+      <ion-item-divider color="light">Canchas</ion-item-divider>
       <ion-item-sliding *ngFor="let field of complexFields">
         <ion-item>
           <ion-icon class="mdi mdi-soccer-field" item-start></ion-icon>
           <h2>{{field.name}}</h2>
-          <h5 style="color: gray">{{field.type}}, {{field.grass}}</h5>
+          <h5 style="color: gray">{{field.type}}, {{field.grass}}, {{field.teamPlayers}}x{{field.teamPlayers}}</h5>
+          <ion-icon class="mdi mdi-menu-left" item-end></ion-icon>
         </ion-item>
         <ion-item-options side="right">
-          <button ion-button (click)="deleteField(field)" color="danger">
-            <ion-icon name="trash"></ion-icon>
+          <button *ngIf="currentUser.type == 'admin'" ion-button (click)="deleteField(field)" color="danger">
+            <ion-icon class="mdi mdi-delete-empty"></ion-icon>
             Eliminar
           </button>
-          <button (click)="editField(field)" ion-button color="primary">
-            <ion-icon name="create"></ion-icon>
+          <button *ngIf="currentUser.type == 'admin'" (click)="editField(field)" ion-button color="primary">
+            <ion-icon class="mdi mdi-playlist-edit"></ion-icon>
             Editar
+          </button>
+          <button *ngIf="currentUser.type == 'player'" ion-button color="secondary">
+            <ion-icon class="mdi mdi-calendar-clock"></ion-icon>
+            Reservar
           </button>
         </ion-item-options>
       </ion-item-sliding>

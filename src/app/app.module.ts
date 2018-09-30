@@ -24,6 +24,8 @@ import { DatabaseProvider } from '../providers/database/database';
 import { HttpClientModule } from '@angular/common/http';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { ImagePicker } from '@ionic-native/image-picker';
+import {IonicImageLoader} from 'ionic-image-loader';
+import {CallNumber} from '@ionic-native/call-number'
 
 
 export const firebaseConfig = {
@@ -54,7 +56,8 @@ export const firebaseConfig = {
     AngularFireAuthModule,  
     AngularFireStorageModule,
     HttpClientModule,
-    IonicImageViewerModule
+    IonicImageViewerModule,
+    IonicImageLoader.forRoot()
       ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -74,7 +77,8 @@ export const firebaseConfig = {
     AuthenticationProvider,
     DatabaseProvider,
     ImagePicker,
-    Camera
+    Camera,
+    CallNumber
   ]
 })
 export class AppModule {}

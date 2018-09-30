@@ -29,7 +29,7 @@ export class LoginPage {
   operation: string = 'login';
 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private toastCtrl: ToastController, private databaseProvider: DatabaseProvider, private authProvider: AuthenticationProvider) {}
+  constructor(public navCtrl: NavController, public navParams: NavParams, private toastCtrl: ToastController, private databaseProvider: DatabaseProvider, private authProvider: AuthenticationProvider) { }
 
   registerWithEmail() {
     if (this.password !== this.password2) {
@@ -58,11 +58,7 @@ export class LoginPage {
           position: 'bottom'
         });
         toast.present();
-        if(user.type = 'admin'){
-          this.navCtrl.setRoot(AdminHomePage);
-        }else{
-          this.navCtrl.setRoot(HomePage);
-        }
+        this.loginWithEmail();
       }).catch((e) => {
         console.log(e);
       });
@@ -72,7 +68,7 @@ export class LoginPage {
   }
 
   loginWithEmail() {
-    this.authProvider.loginWithEmail(this.email, this.password).then((data)=>{
+    this.authProvider.loginWithEmail(this.email, this.password).then((data) => {
       console.log(data);
       let toast = this.toastCtrl.create({
         message: 'Vamos a Jugar!',
@@ -80,8 +76,16 @@ export class LoginPage {
         position: 'bottom'
       });
       toast.present();
-      this.navCtrl.setRoot(HomePage);
-    }).catch((e)=>{
+      this.databaseProvider.getUserById(data.user.uid).valueChanges().subscribe((user: User) => {
+        if (user.type == 'admin') {
+          this.navCtrl.setRoot(AdminHomePage);
+        } else {
+          this.navCtrl.setRoot(HomePage);
+        }
+      }, (err) => {
+        console.log(err);
+      });
+    }).catch((e) => {
       console.log(e);
     });
   }
