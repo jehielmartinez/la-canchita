@@ -1,3 +1,4 @@
+import { NewReservationPage } from './../new-reservation/new-reservation';
 import { CallNumber } from '@ionic-native/call-number';
 import { AuthenticationProvider } from './../../providers/authentication/authentication';
 import { DatabaseProvider } from './../../providers/database/database';
@@ -91,6 +92,15 @@ export class DetailComplexPage {
     .then(res => console.log(res))
     .catch(err => console.log(err));
   }
+
+  makeReservation(field: Field){
+    this.navCtrl.push(NewReservationPage, {
+      complexId: this.complex.id,
+      ownerId: this.complex.userId,
+      fieldId: field.id,
+    });
+  }
+
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad DetailComplexPage');

@@ -25,15 +25,15 @@
 <ion-content padding>
   <div *ngIf="segment === 'complexes'">
     <ion-card *ngFor="let complex of userComplexes; let i=index">
-      
-          <img (click)="goToDetailComplex(complex.id)" src="{{getAllComplexImages(complex.id)[0].imageUrl}}">
-        
+
+      <img (click)="goToDetailComplex(complex.id)" src="{{getAllComplexImages(complex.id)[0].imageUrl}}">
+
       <ion-card-content>
         <ion-row>
           <ion-col col-4 class="icons">
-          <div *ngFor="let option of complex.options">
-            <ion-icon float-start class="mdi mdi-{{option}}"></ion-icon>
-          </div>
+            <div *ngFor="let option of complex.options">
+              <ion-icon float-start class="mdi mdi-{{option}}"></ion-icon>
+            </div>
           </ion-col>
           <ion-col col-8>
             <p (press)="presentActionSheet(complex.id)" class="card-title">{{complex.name | titlecase}}</p>
@@ -41,6 +41,43 @@
         </ion-row>
       </ion-card-content>
     </ion-card>
+  </div>
+
+  <div *ngIf="segment == 'reservations'">
+    <ion-list>
+      <ion-item-sliding *ngFor="let reservation of userReservations">
+
+        <ion-item>
+          <ion-icon class="mdi" [ngClass]="{'mdi-help-circle': reservation.status == 'requested', 
+              'mdi-checkbox-marked-circle': reservation.status == 'confirmed',
+              'mdi-cancel': reservation.status == 'player-canceled',
+              'mdi-close-circle': reservation.status == 'admin-canceled'}"
+            item-start></ion-icon>
+          <h2><b>{{reservation.complexName}}</b></h2>
+          <h5>{{reservation.fieldName}}</h5>
+          <p text-wrap>{{dateStr(reservation)}}</p>
+          <small>{{reservation.player.name}} {{createdStr(reservation.createdAt)}}</small>
+          <ion-icon class="mdi mdi-menu-left" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item-options side="right">
+          <button (click)="call(reservation.player.phone)" *ngIf="reservation.status == 'requested'" ion-button color="primary">
+            <ion-icon class="mdi mdi-phone-in-talk"></ion-icon>
+            Llamar
+          </button>
+          <button (click)="actionReservation(reservation.id, 'confirmed')" *ngIf="reservation.status == 'requested'"
+            ion-button color="secondary">
+            <ion-icon class="mdi mdi-check-circle"></ion-icon>
+            Confirmar
+          </button>
+          <button (click)="actionReservation(reservation.id, 'admin-canceled')" *ngIf="reservation.status !== 'player-canceled'"
+            ion-button color="danger">
+            <ion-icon class="mdi mdi-delete-empty"></ion-icon>
+            Cancelar
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
   </div>
 
   <ion-fab right bottom *ngIf="segment != 'reservations'">

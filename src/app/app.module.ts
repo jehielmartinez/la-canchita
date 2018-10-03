@@ -1,3 +1,4 @@
+import { NewReservationPage } from './../pages/new-reservation/new-reservation';
 import { DetailComplexPage } from './../pages/detail-complex/detail-complex';
 import { AdminHomePage } from './../pages/admin-home/admin-home';
 import { NewFieldPage } from './../pages/new-field/new-field';
@@ -25,11 +26,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { ImagePicker } from '@ionic-native/image-picker';
 import {IonicImageLoader} from 'ionic-image-loader';
-import {CallNumber} from '@ionic-native/call-number'
+import {CallNumber} from '@ionic-native/call-number';
+import { Geolocation } from '@ionic-native/geolocation';
 
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyCjLsz4nD-6_nVdK7_bb8lbT88lppdlf84",
+    apiKey: "AIzaSyCjLsz4nD-6_nVdK7_bb8lbT88lppdlf84",
     authDomain: "lacanchita-433c8.firebaseapp.com",
     databaseURL: "https://lacanchita-433c8.firebaseio.com",
     projectId: "lacanchita-433c8",
@@ -46,7 +48,8 @@ export const firebaseConfig = {
     NewComplexPage,
     NewFieldPage,
     AdminHomePage,
-    DetailComplexPage
+    DetailComplexPage,
+    NewReservationPage
   ],
   imports: [
     BrowserModule,
@@ -68,7 +71,8 @@ export const firebaseConfig = {
     NewComplexPage,
     NewFieldPage,
     AdminHomePage,
-    DetailComplexPage
+    DetailComplexPage,
+    NewReservationPage
   ],
   providers: [
     StatusBar,
@@ -78,7 +82,8 @@ export const firebaseConfig = {
     DatabaseProvider,
     ImagePicker,
     Camera,
-    CallNumber
+    CallNumber,
+    Geolocation,
   ]
 })
 export class AppModule {}

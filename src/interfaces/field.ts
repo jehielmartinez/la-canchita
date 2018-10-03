@@ -7,5 +7,5 @@ export interface Field {
     teamPlayers?: number;
     price?: number
     complexId: string;
-    name: null;
+    name: string;
   }

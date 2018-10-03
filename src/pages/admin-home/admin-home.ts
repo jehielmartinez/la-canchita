@@ -1,3 +1,4 @@
+
 import { HomePage } from './../home/home';
 import { DetailComplexPage } from './../detail-complex/detail-complex';
 import { AuthenticationProvider } from './../../providers/authentication/authentication';
@@ -8,6 +9,9 @@ import { User } from '../../interfaces/user';
 import { LoginPage } from '../login/login';
 import { NewComplexPage } from '../new-complex/new-complex';
 import { NewFieldPage } from '../new-field/new-field';
+import { Reservation } from '../../interfaces/reservation';
+import * as moment from 'moment';
+import { CallNumber } from '@ionic-native/call-number';
 
 /**
  * Generated class for the AdminHomePage page.
@@ -25,6 +29,7 @@ export class AdminHomePage {
   currentUser: User;
   segment = 'complexes';
   userComplexes;
+  userReservations: Reservation[];
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private authProvider: AuthenticationProvider,
@@ -32,6 +37,7 @@ export class AdminHomePage {
     public actionSheetCtrl: ActionSheetController,
     public alertCtrl: AlertController,
     public modalCtrl: ModalController,
+    private callNumber: CallNumber,
     public toastCtrl: ToastController) {
 
     this.authProvider.getStatus().subscribe((session) => {
@@ -40,10 +46,11 @@ export class AdminHomePage {
       } else {
         this.databaseProvider.getUserById(session.uid).valueChanges().subscribe((user: any) => {
           this.currentUser = user;
-          if (this.currentUser.type !== 'admin'){
+          if (this.currentUser.type !== 'admin') {
             this.navCtrl.setRoot(HomePage);
           }
           this.userComplexes = this.getUserComplexes();
+          this.getReservations();
           console.log(this.currentUser);
         }, (err) => {
           console.log(err);
@@ -65,6 +72,22 @@ export class AdminHomePage {
     } else {
       return Object.keys(this.currentUser.complexes).map(i => this.currentUser.complexes[i]);
     }
+  }
+
+  getReservations() {
+    this.databaseProvider.getAdminReservations(this.currentUser.uid).valueChanges().subscribe((data: any) => {
+      this.userReservations = data;
+    }, (err) => {
+      console.log(err);
+    });
+  }
+  dateStr(reservation: Reservation) {
+    let str: String = `${moment(reservation.startDate).locale('es').format('D-MMM')} de ${moment(reservation.startDate).locale('es').format('hh:00 A')} a ${moment(reservation.endDate).locale('es').format('hh:00 A')}`
+    return str
+  }
+  createdStr(createdAt) {
+    let str: String = `${moment(createdAt).locale('es').fromNow()}`
+    return str
   }
 
 
@@ -158,8 +181,29 @@ export class AdminHomePage {
     });
   }
 
-  editComplex(complexId){
+  editComplex(complexId) {
     this.navCtrl.push(NewComplexPage, complexId);
+  }
+
+  actionReservation(reservationId, action) {
+    this.databaseProvider.actionReservation(reservationId, action).then(() => {
+      console.log('Reservacion Actualizada!', action);
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  deleteReservation(reservationId) {
+    this.databaseProvider.deleteReservation(reservationId).then((data) => {
+      console.log('Reservacion Eliminada', data);
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+  call(number){
+    this.callNumber.callNumber(number, true)
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
   }
 
 

@@ -98,6 +98,7 @@
           <ion-icon class="mdi mdi-soccer-field" item-start></ion-icon>
           <h2>{{field.name}}</h2>
           <h5 style="color: gray">{{field.type}}, {{field.grass}}, {{field.teamPlayers}}x{{field.teamPlayers}}</h5>
+          <h4 style="color: red">L{{field.price}}/hora</h4>
           <ion-icon class="mdi mdi-menu-left" item-end></ion-icon>
         </ion-item>
         <ion-item-options side="right">
@@ -109,7 +110,7 @@
             <ion-icon class="mdi mdi-playlist-edit"></ion-icon>
             Editar
           </button>
-          <button *ngIf="currentUser.type == 'player'" ion-button color="secondary">
+          <button (click)="makeReservation(field)" *ngIf="currentUser.type == 'player'" ion-button color="secondary">
             <ion-icon class="mdi mdi-calendar-clock"></ion-icon>
             Reservar
           </button>

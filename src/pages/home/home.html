@@ -7,23 +7,56 @@
       <ion-icon class="mdi mdi-soccer"></ion-icon> La Canchita
     </ion-title>
   </ion-navbar>
+  <ion-segment [(ngModel)]="segment">
+    <ion-segment-button value="complexes">Complejos Deportivos</ion-segment-button>
+    <ion-segment-button value="reservations">Mis Reservaciones</ion-segment-button>
+  </ion-segment>
 </ion-header>
 
 <ion-content padding>
-  <ion-card *ngFor="let complex of complexes; let i=index">
-    <img-loader (click)="goToDetailComplex(complex.userId, complex.id)" src="{{getAllComplexImages(complex)[0].imageUrl}}"
-      useImg></img-loader>
-    <ion-card-content>
-      <ion-row>
-        <ion-col col-4 class="icons">
-          <div *ngFor="let option of complex.options">
-            <ion-icon float-start class="mdi mdi-{{option}}"></ion-icon>
-          </div>
-        </ion-col>
-        <ion-col col-8>
-          <p class="card-title">{{complex.name | titlecase}}</p>
-        </ion-col>
-      </ion-row>
-    </ion-card-content>
-  </ion-card>
+  <div *ngIf="segment == 'complexes'">
+    <ion-card *ngFor="let complex of complexes; let i=index">
+      <img src="{{getAllComplexImages(complex)[0].imageUrl}}">
+      <ion-card-content (click)="goToDetailComplex(complex.userId, complex.id)">
+        <ion-row>
+          <ion-col col-4 class="icons">
+            <div *ngFor="let option of complex.options">
+              <ion-icon float-start class="mdi mdi-{{option}}"></ion-icon>
+            </div>
+          </ion-col>
+          <ion-col col-8>
+            <p class="card-title">{{complex.name | titlecase}}</p>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div *ngIf="segment == 'reservations'">
+    <ion-list>
+      <ion-item-sliding *ngFor="let reservation of userReservations">
+
+        <ion-item>
+          <ion-icon class="mdi" [ngClass]="{'mdi-help-circle': reservation.status == 'requested', 
+                                'mdi-checkbox-marked-circle': reservation.status == 'confirmed',
+                                'mdi-cancel': reservation.status == 'player-canceled',
+                                'mdi-close-circle': reservation.status == 'admin-canceled'}"
+            item-start></ion-icon>
+          <h2><b>{{reservation.complexName}}</b></h2>
+          <h5>{{reservation.fieldName}}</h5>
+          <p text-wrap>{{dateStr(reservation)}}</p>
+          <small>{{createdStr(reservation.createdAt)}}</small>
+          <ion-icon class="mdi mdi-menu-left" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item-options side="right">
+          <button (click)="actionReservation(reservation.id, 'player-canceled')" *ngIf="reservation.status !== 'admin-canceled'" ion-button color="danger">
+            <ion-icon class="mdi mdi-close-box"></ion-icon>
+            Cancelar
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
+
 </ion-content>

@@ -1,15 +1,12 @@
+
 import { AuthenticationProvider } from './../providers/authentication/authentication';
-import { NewFieldPage } from './../pages/new-field/new-field';
-import { AdminHomePage } from './../pages/admin-home/admin-home';
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform, App } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
 import { LoginPage } from '../pages/login/login';
-import { NewComplexPage } from '../pages/new-complex/new-complex';
 
 @Component({
   templateUrl: 'app.html'
@@ -29,8 +26,6 @@ export class MyApp {
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Home', component: HomePage },
-      { title: 'Complejo', component: NewComplexPage},
-      { title: 'Admin Home', component: AdminHomePage},
     ];
 
   }
@@ -44,8 +39,6 @@ export class MyApp {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });

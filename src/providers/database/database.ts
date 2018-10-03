@@ -59,4 +59,21 @@ export class DatabaseProvider {
   deleteField(uid, field){
     return this.firebaseDatabase.object('users/' + uid + '/complexes/' + field.complexId + '/fields/' + field.id).remove();
   }
+  //Reservation Protocols
+  makeReservation(reservation){
+    return this.firebaseDatabase.object('reservations/' + reservation.id).update(reservation);
+  }
+  getPlayerReservations(uid){
+    return this.firebaseDatabase.list('reservations/', ref => ref.orderByChild('playerId').equalTo(uid));
+  }
+  getAdminReservations(uid){
+    return this.firebaseDatabase.list('reservations/', ref => ref.orderByChild('ownerId').equalTo(uid));
+  }
+  actionReservation(reservationId, action){
+    return this.firebaseDatabase.object('reservations/' + reservationId).update({status: action});
+  }
+  deleteReservation(reservationId){
+    return this.firebaseDatabase.object('reservations/' + reservationId).remove();
+  }
+
 }
