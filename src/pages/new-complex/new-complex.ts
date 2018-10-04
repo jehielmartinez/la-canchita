@@ -38,7 +38,7 @@ export class NewComplexPage {
     weekEndOpenAt: null,
     weekEndCloseAt: null,
     options: null,
-    userId: null,
+    ownerId: null,
     email: null,
     web: null
   }
@@ -75,7 +75,7 @@ export class NewComplexPage {
   }
 
   getComplex(complexId) {
-    this.databaseProvider.getComplexById(this.currentUser.uid, complexId).valueChanges().subscribe((data: Complex) => {
+    this.databaseProvider.getComplexById(complexId).valueChanges().subscribe((data: Complex) => {
       this.complex = data;
       this.getComplexImages();
     }, (err) => {
@@ -84,7 +84,7 @@ export class NewComplexPage {
   }
 
   getComplexImages() {
-    this.databaseProvider.getComplexImages(this.currentUser.uid, this.complex.id).valueChanges().subscribe((data) => {
+    this.databaseProvider.getComplexImages(this.complex.id).valueChanges().subscribe((data) => {
       this.complexImages = data;
       console.log(this.complexImages);
     }, (err) => {
@@ -122,7 +122,7 @@ export class NewComplexPage {
             imageUrl: url,
             complexId: this.complex.id
           };
-          this.databaseProvider.updateComplexImages(imageURL, this.currentUser.uid).catch(() => {
+          this.databaseProvider.updateComplexImages(imageURL).catch(() => {
             console.log('Imagenes Actualizadas');
           }).catch((err) => {
             console.log(err);
@@ -150,7 +150,7 @@ export class NewComplexPage {
             console.log(err);
           });
         });
-        this.databaseProvider.deleteComplex(this.currentUser.uid, this.complex.id).then(() => {
+        this.databaseProvider.deleteComplex(this.complex.id).then(() => {
           console.log('Complex successfuly deleted');
           this.navCtrl.setRoot(AdminHomePage);
         }).catch((err) => {
@@ -173,8 +173,8 @@ export class NewComplexPage {
       });
       toast.present();
     } else {
-      this.complex.userId = this.currentUser.uid;
-      this.databaseProvider.saveComplex(this.currentUser.uid, this.complex).then(() => {
+      this.complex.ownerId = this.currentUser.uid;
+      this.databaseProvider.saveComplex(this.complex).then(() => {
         console.log('Complex Saved');
         this.navCtrl.setRoot(AdminHomePage);
       }).catch((err) => {

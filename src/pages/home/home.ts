@@ -3,30 +3,34 @@ import { Complex } from './../../interfaces/complex';
 import { AdminHomePage } from './../admin-home/admin-home';
 import { AuthenticationProvider } from './../../providers/authentication/authentication';
 import { DatabaseProvider } from './../../providers/database/database';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { LoginPage } from '../login/login';
 import { User } from '../../interfaces/user';
 import { DetailComplexPage } from '../detail-complex/detail-complex';
 import * as moment from 'moment';
-import { HttpClient } from '@angular/common/http';
-import { Geolocation } from '@ionic-native/geolocation';
+import cities from '../../app/cities';
+import { Content } from 'ionic-angular';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
+  @ViewChild(Content) content: Content;
   currentUser: User;
   complexes: Complex[] = [];
   segment = 'complexes';
   userReservations: Reservation[] = [];
   location: any;
+  countries = ['Guatemala', 'Costa Rica', 'Honduras', 'Nicaragua', 'El Salvador', 'Panama'];
+  cities = cities;
+  selectedCountry;
+  selectedCity = null;
+  showFilter = true;
 
   constructor(public navCtrl: NavController,
     private databaseProvider: DatabaseProvider,
-    private geolocation: Geolocation, 
-    private httpClient: HttpClient,
     private authProvider: AuthenticationProvider) {
     this.authProvider.getStatus().subscribe((session) => {
       if (session == null) {
@@ -37,66 +41,67 @@ export class HomePage {
           if (this.currentUser.type !== 'player') {
             this.navCtrl.setRoot(AdminHomePage);
           }
-          console.log(this.currentUser);
-          this.getComplexes();
+          console.log('User', this.currentUser);
+          this.filteredComplexes();
           this.getUserReservations();
-          this.getLocation();
         }, (err) => {
           console.log(err);
         });
       }
     }, (err) => {
       console.log(err);
-    })
+    });
   }
 
+  toggleFilter() {
+    if (this.showFilter == true) {
+      this.showFilter = false;
+      this.content.scrollToTop();
+    } else {
+      this.showFilter = true;
+      this.content.scrollToTop();
+    };
+  }
 
-  getComplexes() {
-    this.databaseProvider.getAllAdmins().valueChanges().subscribe((data: any) => {
-      let admins: User[] = data;
-      this.complexes = [];
-      admins.forEach(admin => {
-        this.getUserComplexes(admin);
-      });
-      console.log(this.complexes);
+  filter(){
+    this.filteredComplexes();
+    this.showFilter = false;
+  }
+
+  filteredComplexes() {
+    this.databaseProvider.filteredComplexes(this.selectedCity).valueChanges().subscribe((data: any) => {
+      this.complexes = data;
+      this.complexes.sort((a,b) => 0.5 - Math.random());
+      console.log('Complexes', this.complexes);
     }, (err) => {
       console.log(err);
-    })
-  }
-
-  getUserComplexes(user: User) {
-    Object.keys(user.complexes).map(i => user.complexes[i]).forEach(complex => {
-      this.complexes.push(complex);
     });
   }
 
   getAllComplexImages(complex) {
-    const complexImages = Object.keys(complex.images).map(i => complex.images[i]);
-    return complexImages
+    return Object.keys(complex.images).map(i => complex.images[i]);
   }
 
   getUserReservations() {
     this.databaseProvider.getPlayerReservations(this.currentUser.uid).valueChanges().subscribe((data: any) => {
       this.userReservations = data;
-      console.log(this.userReservations);
+      this.userReservations.reverse();
+      console.log('Reservations', this.userReservations);
     }, (err) => {
       console.log(err);
     });
   }
 
 
-  goToDetailComplex(uid, _complexId) {
-    this.navCtrl.push(DetailComplexPage, {
-      userId: uid,
-      complexId: _complexId,
-    });
+  goToDetailComplex(_complexId) {
+    this.navCtrl.push(DetailComplexPage, _complexId);
   }
 
-  dateStr(reservation: Reservation){
+  dateStr(reservation: Reservation) {
     let str: String = `${moment(reservation.startDate).locale('es').format('D-MMM')} de ${moment(reservation.startDate).locale('es').format('hh:00 A')} a ${moment(reservation.endDate).locale('es').format('hh:00 A')}`
     return str
   }
-  createdStr(createdAt){
+  createdStr(createdAt) {
     let str: String = `${moment(createdAt).locale('es').fromNow()}`
     return str
   }
@@ -106,19 +111,6 @@ export class HomePage {
       console.log('Reservacion Actualizada!', action);
     }).catch((err) => {
       console.log(err);
-    });
-  }
-
-  getLocation() {
-    this.geolocation.getCurrentPosition().then((response) => {
-      this.location = response;
-      this.httpClient.get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + response.coords.latitude + ',' + response.coords.longitude + '&key=AIzaSyCjLsz4nD-6_nVdK7_bb8lbT88lppdlf84').subscribe((data: any) => {
-        console.log('Coordenadas', data);
-      }, (error) => {
-        console.log(error); 
-      });
-    }).catch((error) => {
-      console.log(error);
     });
   }
 

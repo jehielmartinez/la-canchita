@@ -13,7 +13,7 @@ export interface Complex {
     city: string;
     country: string;
     fields?: any;
-    userId?: string;
+    ownerId: string;
     email?: string;
     web?: string;
   }

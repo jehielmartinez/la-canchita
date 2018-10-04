@@ -12,6 +12,7 @@ import { NewFieldPage } from '../new-field/new-field';
 import { Reservation } from '../../interfaces/reservation';
 import * as moment from 'moment';
 import { CallNumber } from '@ionic-native/call-number';
+import { Complex } from '../../interfaces/complex';
 
 /**
  * Generated class for the AdminHomePage page.
@@ -30,6 +31,7 @@ export class AdminHomePage {
   segment = 'complexes';
   userComplexes;
   userReservations: Reservation[];
+  userBlacklist: User[];
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private authProvider: AuthenticationProvider,
@@ -49,8 +51,9 @@ export class AdminHomePage {
           if (this.currentUser.type !== 'admin') {
             this.navCtrl.setRoot(HomePage);
           }
-          this.userComplexes = this.getUserComplexes();
+          this.getUserComplexes();
           this.getReservations();
+          this.getUserBlackList();
           console.log(this.currentUser);
         }, (err) => {
           console.log(err);
@@ -61,22 +64,31 @@ export class AdminHomePage {
     });
   }
 
-  getAllComplexImages(complexId) {
-    const complexImages = Object.keys(this.currentUser.complexes[complexId].images).map(i => this.currentUser.complexes[complexId].images[i]);
-    return complexImages
+  getAllComplexImages(complex) {
+    return Object.keys(complex.images).map(i => complex.images[i]); 
   }
 
   getUserComplexes() {
-    if (!this.currentUser.complexes) {
-      return
-    } else {
-      return Object.keys(this.currentUser.complexes).map(i => this.currentUser.complexes[i]);
-    }
+    this.databaseProvider.getUserComplexes(this.currentUser.uid).valueChanges().subscribe((data:any)=>{
+      this.userComplexes = data;
+      console.log(this.userComplexes);
+    },(err)=>{
+      console.log(err);
+    });
+  }
+  getUserBlackList(){
+    this.databaseProvider.getUserBlacklist(this.currentUser.uid).valueChanges().subscribe((data: any)=>{
+      this.userBlacklist = data;
+      console.log('BlackList', this.userBlacklist)
+    },(err)=>{
+      console.log(err);
+    });
   }
 
   getReservations() {
     this.databaseProvider.getAdminReservations(this.currentUser.uid).valueChanges().subscribe((data: any) => {
       this.userReservations = data;
+      this.userReservations.reverse();
     }, (err) => {
       console.log(err);
     });
@@ -109,6 +121,29 @@ export class AdminHomePage {
           icon: 'trash',
           handler: () => {
             this.deleteConfirm(complexId, 'complex');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
+  }
+
+  presentReservationSheet(reservation){
+    const actionSheet = this.actionSheetCtrl.create({
+      title: 'Acciones',
+      buttons: [
+        {
+          text: 'Llamar Usuario',
+          icon: 'call',
+          handler: () => {
+            this.call(reservation.player.phone);
+          }
+        },
+        {
+          text: 'Agregar Usuario a Lista Negra',
+          icon: 'list-box',
+          handler: () => {
+            this.addPlayerToBlacklist(reservation.player);
           }
         }
       ]
@@ -155,7 +190,7 @@ export class AdminHomePage {
             console.log(err);
           });
         });
-        this.databaseProvider.deleteComplex(this.currentUser.uid, complexId).then(() => {
+        this.databaseProvider.deleteComplex(complexId).then(() => {
           console.log('Complex successfuly deleted');
           this.navCtrl.setRoot(AdminHomePage);
         }).catch((err) => {
@@ -175,10 +210,7 @@ export class AdminHomePage {
   }
 
   goToDetailComplex(_complexId) {
-    this.navCtrl.push(DetailComplexPage, {
-      userId: this.currentUser.uid,
-      complexId: _complexId,
-    });
+    this.navCtrl.push(DetailComplexPage, _complexId);
   }
 
   editComplex(complexId) {
@@ -200,10 +232,27 @@ export class AdminHomePage {
       console.log(err);
     });
   }
+
   call(number){
     this.callNumber.callNumber(number, true)
     .then(res => console.log(res))
     .catch(err => console.log(err));
+  }
+  addPlayerToBlacklist(player){
+    this.databaseProvider.addToBlacklist(this.currentUser.uid, player).then(()=>{
+      console.log('Player added to your BlackList');
+    }).catch((err)=>{
+      console.log(err);
+    });
+  }
+  checkUser(playerId){
+    let check = false;
+    this.userBlacklist.forEach(element => {
+      if (playerId == element.uid){
+        check = true;
+      };
+    });
+    return check
   }
 
 

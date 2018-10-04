@@ -57,7 +57,7 @@ export class NewReservationPage {
   }
 
   getComplexById() {
-    this.databaseProvider.getComplexById(this.data.ownerId, this.data.complexId).valueChanges().subscribe((complex: Complex) => {
+    this.databaseProvider.getComplexById(this.data.complexId).valueChanges().subscribe((complex: Complex) => {
       this.complex = complex;
       this.fields = this.getComplexFields();
       this.getField();

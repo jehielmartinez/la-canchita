@@ -26,9 +26,9 @@
   <div *ngIf="segment === 'complexes'">
     <ion-card *ngFor="let complex of userComplexes; let i=index">
 
-      <img (click)="goToDetailComplex(complex.id)" src="{{getAllComplexImages(complex.id)[0].imageUrl}}">
+      <img (click)="goToDetailComplex(complex.id)" src="{{getAllComplexImages(complex)[0].imageUrl}}">
 
-      <ion-card-content>
+      <ion-card-content (click)="goToDetailComplex(complex.id)">
         <ion-row>
           <ion-col col-4 class="icons">
             <div *ngFor="let option of complex.options">
@@ -45,7 +45,7 @@
 
   <div *ngIf="segment == 'reservations'">
     <ion-list>
-      <ion-item-sliding *ngFor="let reservation of userReservations">
+      <ion-item-sliding (press)="presentReservationSheet(reservation)" *ngFor="let reservation of userReservations">
 
         <ion-item>
           <ion-icon class="mdi" [ngClass]="{'mdi-help-circle': reservation.status == 'requested', 
@@ -53,18 +53,19 @@
               'mdi-cancel': reservation.status == 'player-canceled',
               'mdi-close-circle': reservation.status == 'admin-canceled'}"
             item-start></ion-icon>
-          <h2><b>{{reservation.complexName}}</b></h2>
+          <h2 text-wrap><b>{{reservation.complexName}}</b></h2>
           <h5>{{reservation.fieldName}}</h5>
           <p text-wrap>{{dateStr(reservation)}}</p>
-          <small>{{reservation.player.name}} {{createdStr(reservation.createdAt)}}</small>
+          <small>
+            <ion-icon [ngClass]="{'mdi-alert': checkUser(reservation.player.uid) == true,
+                                  'mdi-verified': checkUser(reservation.player.uid) == false}"
+              class="mdi"></ion-icon>
+            {{reservation.player.name}} {{createdStr(reservation.createdAt)}}
+          </small>
           <ion-icon class="mdi mdi-menu-left" item-end></ion-icon>
         </ion-item>
 
         <ion-item-options side="right">
-          <button (click)="call(reservation.player.phone)" *ngIf="reservation.status == 'requested'" ion-button color="primary">
-            <ion-icon class="mdi mdi-phone-in-talk"></ion-icon>
-            Llamar
-          </button>
           <button (click)="actionReservation(reservation.id, 'confirmed')" *ngIf="reservation.status == 'requested'"
             ion-button color="secondary">
             <ion-icon class="mdi mdi-check-circle"></ion-icon>

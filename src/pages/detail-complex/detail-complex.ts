@@ -39,7 +39,7 @@ export class DetailComplexPage {
       } else {
         this.databaseProvider.getUserById(session.uid).valueChanges().subscribe((user: any) => {
           this.currentUser = user;
-          this.getComplex(navParams.data.userId, navParams.data.complexId);
+          this.getComplex(navParams.data);
         }, (err) => {
           console.log(err);
         });
@@ -49,8 +49,8 @@ export class DetailComplexPage {
     });
   }
 
-  getComplex(uid, complexId) {
-    this.databaseProvider.getComplexById(uid, complexId).valueChanges().subscribe((data: Complex) => {
+  getComplex(complexId) {
+    this.databaseProvider.getComplexById(complexId).valueChanges().subscribe((data: Complex) => {
       this.complex = data;
       this.complexFields = this.getComplexFields();
       this.getAllComplexImages();
@@ -76,7 +76,7 @@ export class DetailComplexPage {
   }
 
   deleteField(field: Field) {
-    this.databaseProvider.deleteField(this.complex.userId, field).then(() => {
+    this.databaseProvider.deleteField(field).then(() => {
       console.log('Field Deleted');
     }).catch((err) => {
       console.log(err);
@@ -96,7 +96,7 @@ export class DetailComplexPage {
   makeReservation(field: Field){
     this.navCtrl.push(NewReservationPage, {
       complexId: this.complex.id,
-      ownerId: this.complex.userId,
+      ownerId: this.complex.ownerId,
       fieldId: field.id,
     });
   }

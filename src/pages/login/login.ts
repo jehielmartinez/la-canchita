@@ -1,11 +1,9 @@
-import { AdminHomePage } from './../admin-home/admin-home';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
 import { AuthenticationProvider } from '../../providers/authentication/authentication';
 import { User } from '../../interfaces/user';
 import { HomePage } from '../home/home';
-import { NewComplexPage } from '../new-complex/new-complex';
 
 /**
  * Generated class for the LoginPage page.
@@ -76,20 +74,11 @@ export class LoginPage {
         position: 'bottom'
       });
       toast.present();
-      this.databaseProvider.getUserById(data.user.uid).valueChanges().subscribe((user: User) => {
-        if (user.type == 'admin') {
-          this.navCtrl.setRoot(AdminHomePage);
-        } else {
-          this.navCtrl.setRoot(HomePage);
-        }
-      }, (err) => {
-        console.log(err);
-      });
+      this.navCtrl.setRoot(HomePage);
     }).catch((e) => {
       console.log(e);
     });
   }
-
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');

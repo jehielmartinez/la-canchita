@@ -7,6 +7,7 @@ import { DatabaseProvider } from '../../providers/database/database';
 import { User } from '../../interfaces/user';
 import { LoginPage } from '../login/login';
 import { NewComplexPage } from '../new-complex/new-complex';
+import { Complex } from '../../interfaces/complex';
 
 /**
  * Generated class for the NewFieldPage page.
@@ -43,7 +44,7 @@ export class NewFieldPage {
       } else {
         this.databaseProvider.getUserById(session.uid).valueChanges().subscribe((user: any) => {
           this.currentUser = user;
-          if (navParams.data !== 'new'){
+          if (navParams.data !== 'new') {
             this.field = navParams.data;
           };
           this.complexes = this.getUserComplexes();
@@ -58,24 +59,28 @@ export class NewFieldPage {
   }
 
   getUserComplexes() {
-    if (!this.currentUser.complexes) {
-      let toast = this.toastCtrl.create({
-        message: 'Primero registre un Complejo',
-        duration: 3000,
-        position: 'bottom'
-      });
-      toast.present();
-      this.navCtrl.setRoot(NewComplexPage);
-    } else {
-      return Object.keys(this.currentUser.complexes).map(i => this.currentUser.complexes[i]);
-    }
+    this.databaseProvider.getUserComplexes(this.currentUser.uid).valueChanges().subscribe((data: any) => {
+      this.complexes = data;
+      if (this.complexes.length == 0) {
+        let toast = this.toastCtrl.create({
+          message: 'Primero registre un Complejo',
+          duration: 3000,
+          position: 'bottom'
+        });
+        toast.present();
+        this.navCtrl.setRoot(NewComplexPage);
+      }
+    }, (err) => {
+      console.log(err);
+    });
   }
+
 
   saveField() {
     if (!this.field.name) {
       this.deleteField();
     } else {
-      this.databaseProvider.saveField(this.currentUser.uid, this.field).then(() => {
+      this.databaseProvider.saveField(this.field).then(() => {
         console.log('Field Saved');
         this.navCtrl.setRoot(AdminHomePage);
       }).catch((err) => {
@@ -84,9 +89,9 @@ export class NewFieldPage {
     }
 
   }
-  
+
   deleteField() {
-    this.databaseProvider.deleteField(this.currentUser.uid, this.field).then(() => {
+    this.databaseProvider.deleteField(this.field).then(() => {
       console.log('Field Deleted');
       this.navCtrl.setRoot(AdminHomePage);
     }).catch((err) => {
@@ -94,11 +99,9 @@ export class NewFieldPage {
     })
   }
 
-  cancel(){
+  cancel() {
     this.navCtrl.setRoot(AdminHomePage);
   }
-
-
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad NewFieldPage');

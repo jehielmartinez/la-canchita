@@ -13,11 +13,37 @@
   </ion-segment>
 </ion-header>
 
+
 <ion-content padding>
   <div *ngIf="segment == 'complexes'">
-    <ion-card *ngFor="let complex of complexes; let i=index">
-      <img src="{{getAllComplexImages(complex)[0].imageUrl}}">
-      <ion-card-content (click)="goToDetailComplex(complex.userId, complex.id)">
+
+    <ion-row *ngIf="showFilter == true">
+      <ion-col>
+        <ion-item>
+          <ion-label fixed>
+            <ion-icon class="mdi mdi-flag-checkered"></ion-icon> Pais
+          </ion-label>
+          <ion-select [(ngModel)]="selectedCountry">
+            <ion-option *ngFor="let country of countries">{{country}}</ion-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label fixed>
+            <ion-icon class="mdi mdi-city-variant"></ion-icon> Ciudad
+          </ion-label>
+          <ion-select (ionChange)="filter()" [(ngModel)]="selectedCity">
+            <div *ngFor="let city of cities">
+              <ion-option *ngIf="city.country == selectedCountry">{{city.city}}</ion-option>
+            </div>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-card *ngFor="let complex of complexes">
+      <img (click)="goToDetailComplex(complex.id)" src="{{getAllComplexImages(complex)[0].imageUrl}}">
+      <ion-card-content (click)="goToDetailComplex(complex.id)">
         <ion-row>
           <ion-col col-4 class="icons">
             <div *ngFor="let option of complex.options">
@@ -42,7 +68,7 @@
                                 'mdi-cancel': reservation.status == 'player-canceled',
                                 'mdi-close-circle': reservation.status == 'admin-canceled'}"
             item-start></ion-icon>
-          <h2><b>{{reservation.complexName}}</b></h2>
+          <h2 text-wrap><b>{{reservation.complexName}}</b></h2>
           <h5>{{reservation.fieldName}}</h5>
           <p text-wrap>{{dateStr(reservation)}}</p>
           <small>{{createdStr(reservation.createdAt)}}</small>
@@ -50,7 +76,8 @@
         </ion-item>
 
         <ion-item-options side="right">
-          <button (click)="actionReservation(reservation.id, 'player-canceled')" *ngIf="reservation.status !== 'admin-canceled'" ion-button color="danger">
+          <button (click)="actionReservation(reservation.id, 'player-canceled')" *ngIf="reservation.status !== 'admin-canceled'"
+            ion-button color="danger">
             <ion-icon class="mdi mdi-close-box"></ion-icon>
             Cancelar
           </button>
@@ -58,5 +85,11 @@
       </ion-item-sliding>
     </ion-list>
   </div>
+
+  <ion-fab right top *ngIf="segment == 'complexes' && showFilter == false">
+    <button (click)="toggleFilter()" color="primary" ion-fab mini>
+        <ion-icon class="mdi mdi-filter-variant"></ion-icon>
+    </button>
+  </ion-fab>
 
 </ion-content>

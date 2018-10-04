@@ -64,14 +64,14 @@
           <h2 text-wrap>Viernes a Sabado desde {{complex.weekEndOpenAt}} hasta las {{complex.weekEndCloseAt}}</h2>
       </ion-item>
 
-      <ion-item>
+      <ion-item *ngIf="complex.email" >
           <ion-icon class="mdi mdi-email" item-start></ion-icon>
-          <h2 text-wrap>lacanchita@gmail.com</h2>
+          <h2 text-wrap>{{complex.email}}</h2>
       </ion-item>
 
-      <ion-item>
+      <ion-item *ngIf="complex.web" >
           <ion-icon class="mdi mdi-web" item-start></ion-icon>
-          <h2 text-wrap>www.lacanchita.com</h2>
+          <h2 text-wrap>{{complex.web}}</h2>
       </ion-item>
 
       <ion-item-divider color="light">Caracteristicas</ion-item-divider>
