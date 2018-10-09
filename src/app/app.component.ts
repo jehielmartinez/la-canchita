@@ -1,3 +1,4 @@
+import { DatabaseProvider } from './../providers/database/database';
 
 import { AuthenticationProvider } from './../providers/authentication/authentication';
 import { Component, ViewChild } from '@angular/core';
@@ -7,6 +8,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
+import { User } from '../interfaces/user';
+import { ProfilePage } from '../pages/profile/profile';
 
 @Component({
   templateUrl: 'app.html'
@@ -16,21 +19,34 @@ export class MyApp {
 
   rootPage: any = HomePage;
 
-  pages: Array<{title: string, component: any}>;
+  pages: Array<{ title: string, component: any }>;
+  currentUser: User;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
-    private authService: AuthenticationProvider,
+    private authProvider: AuthenticationProvider,
+    private databaseProvider: DatabaseProvider,
     private app: App) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Home', component: HomePage },
+      { title: 'Perfil de Usuario', component: ProfilePage },
     ];
+
+    this.authProvider.getStatus().subscribe((session) => {
+        this.databaseProvider.getUserById(session.uid).valueChanges().subscribe((user: any) => {
+          this.currentUser = user;
+        }, (err) => {
+          console.log(err);
+        });
+    }, (err) => {
+      console.log(err);
+    });
 
   }
   logout() {
-    this.authService.logout().then(() => {
+    this.authProvider.logout().then(() => {
       this.app.getRootNav().setRoot(LoginPage);
     }).catch((error) => {
       console.log(error);

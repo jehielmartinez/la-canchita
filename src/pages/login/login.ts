@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
 import { AuthenticationProvider } from '../../providers/authentication/authentication';
 import { User } from '../../interfaces/user';
@@ -27,7 +27,7 @@ export class LoginPage {
   operation: string = 'login';
 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private toastCtrl: ToastController, private databaseProvider: DatabaseProvider, private authProvider: AuthenticationProvider) { }
+  constructor(public navCtrl: NavController, public navParams: NavParams, private toastCtrl: ToastController, private databaseProvider: DatabaseProvider, private authProvider: AuthenticationProvider, private alertCtrl: AlertController) { }
 
   registerWithEmail() {
     if (this.password !== this.password2) {
@@ -57,11 +57,23 @@ export class LoginPage {
         });
         toast.present();
         this.loginWithEmail();
-      }).catch((e) => {
-        console.log(e);
+      }).catch((err) => {
+        let toast = this.toastCtrl.create({
+          message: err.message,
+          duration: 3000,
+          position: 'bottom'
+        });
+        toast.present();
+        console.log('Error',err);
       });
-    }).catch((e) => {
-      console.log(e);
+    }).catch((err) => {
+      let toast = this.toastCtrl.create({
+        message: err.message,
+        duration: 3000,
+        position: 'bottom'
+      });
+      toast.present();
+      console.log(err);
     });
   }
 
@@ -69,15 +81,59 @@ export class LoginPage {
     this.authProvider.loginWithEmail(this.email, this.password).then((data) => {
       console.log(data);
       let toast = this.toastCtrl.create({
-        message: 'Vamos a Jugar!',
+        message: 'Bienvenido!',
         duration: 3000,
         position: 'bottom'
       });
       toast.present();
       this.navCtrl.setRoot(HomePage);
-    }).catch((e) => {
-      console.log(e);
+    }).catch((err) => {
+      let toast = this.toastCtrl.create({
+        message: err.message,
+        duration: 3000,
+        position: 'bottom'
+      });
+      toast.present();
+      console.log('Error', err);
     });
+  }
+
+
+  resetPassword() {
+    const prompt = this.alertCtrl.create({
+      title: 'Cambiar Contraseña',
+      message: 'Ingrese su Email, le enviaremos un enlace con instrucciones',
+      inputs: [
+        {
+          name: 'email',
+          placeholder: 'Email'
+        }
+      ],
+      buttons: [{
+        text: 'Cancelar',
+        handler: data => {
+          console.log(data);
+        }
+      },
+      {
+        text: 'Enviar',
+        handler: data => {
+          this.authProvider.changePassword(data.email).then((data) => {
+            let toast = this.toastCtrl.create({
+              message: 'Solicitud Enviada',
+              duration: 3000,
+              position: 'bottom'
+            })
+            toast.present();
+          }).catch((error) => {
+            console.log(error);
+          })
+        }
+      }
+      ]
+
+    });
+    prompt.present();
   }
 
   ionViewDidLoad() {

@@ -21,6 +21,10 @@ export class AuthenticationProvider {
     return this.firebaseAuth.auth.signInWithEmailAndPassword(email, password);
   }
 
+  changePassword(email){
+    return this.firebaseAuth.auth.sendPasswordResetEmail(email);
+  }
+
   logout(){
     return this.firebaseAuth.auth.signOut();
   }

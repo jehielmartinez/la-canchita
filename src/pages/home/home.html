@@ -6,13 +6,15 @@
     <ion-title>
       <ion-icon class="mdi mdi-soccer"></ion-icon> La Canchita
     </ion-title>
-  </ion-navbar>
+  </ion-navbar> 
   <ion-segment [(ngModel)]="segment">
-    <ion-segment-button  value="complexes">Complejos Deportivos</ion-segment-button>
-    <ion-segment-button  value="reservations">Mis Reservaciones</ion-segment-button>
+    <ion-segment-button value="complexes">Complejos Deportivos</ion-segment-button>
+    <ion-segment-button (click)="badgeCounter = 0" value="reservations">Mis Reservaciones
+      <ion-badge *ngIf="badgeCounter > 0"
+        color="secondary">{{badgeCounter}}</ion-badge>
+    </ion-segment-button>
   </ion-segment>
 </ion-header>
-
 
 <ion-content padding>
   <div *ngIf="segment == 'complexes'">
@@ -66,8 +68,7 @@
           <ion-icon class="mdi" [ngClass]="{'mdi-help-circle': reservation.status == 'requested', 
                                 'mdi-checkbox-marked-circle': reservation.status == 'confirmed',
                                 'mdi-cancel': reservation.status == 'player-canceled',
-                                'mdi-close-circle': reservation.status == 'admin-canceled'}"
-            item-start></ion-icon>
+                                'mdi-close-circle': reservation.status == 'admin-canceled'}" item-start></ion-icon>
           <h2 text-wrap><b>{{reservation.complexName}}</b></h2>
           <h5>{{reservation.fieldName}}</h5>
           <p text-wrap>{{dateStr(reservation)}}</p>
@@ -76,8 +77,8 @@
         </ion-item>
 
         <ion-item-options side="right">
-          <button (click)="actionReservation(reservation.id, 'player-canceled')" *ngIf="reservation.status !== 'admin-canceled'"
-            ion-button color="danger">
+          <button (click)="actionReservation(reservation.id, 'player-canceled')" *ngIf="reservation.status !== 'admin-canceled'" ion-button
+            color="danger">
             <ion-icon class="mdi mdi-close-box"></ion-icon>
             Cancelar
           </button>
@@ -88,7 +89,7 @@
 
   <ion-fab right top *ngIf="segment == 'complexes' && showFilter == false">
     <button (click)="toggleFilter()" color="primary" ion-fab mini>
-        <ion-icon class="mdi mdi-filter-variant"></ion-icon>
+      <ion-icon class="mdi mdi-filter-variant"></ion-icon>
     </button>
   </ion-fab>
 

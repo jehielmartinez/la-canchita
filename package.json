@@ -21,6 +21,7 @@
     "@angular/http": "5.2.11",
     "@angular/platform-browser": "5.2.11",
     "@angular/platform-browser-dynamic": "5.2.11",
+    "@ionic-native/badge": "^4.15.0",
     "@ionic-native/call-number": "^4.15.0",
     "@ionic-native/camera": "^4.13.0",
     "@ionic-native/core": "~4.12.0",
@@ -33,6 +34,7 @@
     "@mdi/font": "^2.8.94",
     "call-number": "^1.0.1",
     "cordova-android": "7.0.0",
+    "cordova-plugin-badge": "^0.8.7",
     "cordova-plugin-camera": "^4.0.3",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-file": "^6.0.1",
@@ -50,11 +52,11 @@
     "ionic-img-viewer": "^2.9.0",
     "ionicons": "3.0.0",
     "moment": "^2.22.2",
+    "mx.ferreyra.callnumber": "~0.0.2",
     "rxjs": "^6.3.2",
     "rxjs-compat": "^6.3.2",
     "sw-toolbox": "3.6.0",
-    "zone.js": "0.8.26",
-    "mx.ferreyra.callnumber": "~0.0.2"
+    "zone.js": "0.8.26"
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.2.0",
@@ -80,7 +82,8 @@
       "mx.ferreyra.callnumber": {},
       "cordova-plugin-geolocation": {
         "GEOLOCATION_USAGE_DESCRIPTION": "Para conocer tu posicion"
-      }
+      },
+      "cordova-plugin-badge": {}
     },
     "platforms": [
       "android"

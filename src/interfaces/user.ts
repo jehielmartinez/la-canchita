@@ -5,6 +5,7 @@ export interface User {
     phone?: string;
     avatar?: string;
     address?: string;
+    age?: number;
     type: string;
     blacklist?: any;
   }

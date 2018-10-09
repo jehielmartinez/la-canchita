@@ -17,7 +17,9 @@
 
   <ion-segment [(ngModel)]="segment">
     <ion-segment-button value="complexes">Mis Complejos</ion-segment-button>
-    <ion-segment-button value="reservations">Reservaciones</ion-segment-button>
+    <ion-segment-button (click)="badgeCounter = 0" value="reservations">Reservaciones
+      <ion-badge *ngIf="badgeCounter > 0" color="secondary">{{badgeCounter}}</ion-badge>
+    </ion-segment-button>
   </ion-segment>
 
 </ion-header>
@@ -52,28 +54,25 @@
           <ion-icon class="mdi" [ngClass]="{'mdi-help-circle': reservation.status == 'requested', 
               'mdi-checkbox-marked-circle': reservation.status == 'confirmed',
               'mdi-cancel': reservation.status == 'player-canceled',
-              'mdi-close-circle': reservation.status == 'admin-canceled'}"
-            item-start></ion-icon>
+              'mdi-close-circle': reservation.status == 'admin-canceled'}" item-start></ion-icon>
           <h2 text-wrap><b>{{reservation.complexName}}</b></h2>
           <h5>{{reservation.fieldName}}</h5>
           <p text-wrap>{{dateStr(reservation)}}</p>
           <small>
             <ion-icon [ngClass]="{'mdi-alert': checkUser(reservation.player.uid) == true,
-                                  'mdi-verified': checkUser(reservation.player.uid) == false}"
-              class="mdi"></ion-icon>
+                                  'mdi-verified': checkUser(reservation.player.uid) == false}" class="mdi"></ion-icon>
             {{reservation.player.name}} {{createdStr(reservation.createdAt)}}
           </small>
           <ion-icon class="mdi mdi-menu-left" item-end></ion-icon>
         </ion-item>
 
         <ion-item-options side="right">
-          <button (click)="actionReservation(reservation.id, 'confirmed')" *ngIf="reservation.status == 'requested'"
-            ion-button color="secondary">
+          <button (click)="actionReservation(reservation.id, 'confirmed')" *ngIf="reservation.status == 'requested'" ion-button color="secondary">
             <ion-icon class="mdi mdi-check-circle"></ion-icon>
             Confirmar
           </button>
-          <button (click)="actionReservation(reservation.id, 'admin-canceled')" *ngIf="reservation.status !== 'player-canceled'"
-            ion-button color="danger">
+          <button (click)="actionReservation(reservation.id, 'admin-canceled')" *ngIf="reservation.status !== 'player-canceled'" ion-button
+            color="danger">
             <ion-icon class="mdi mdi-delete-empty"></ion-icon>
             Cancelar
           </button>

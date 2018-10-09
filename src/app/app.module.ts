@@ -1,3 +1,4 @@
+import { ProfilePage } from './../pages/profile/profile';
 import { NewReservationPage } from './../pages/new-reservation/new-reservation';
 import { DetailComplexPage } from './../pages/detail-complex/detail-complex';
 import { AdminHomePage } from './../pages/admin-home/admin-home';
@@ -28,6 +29,8 @@ import { ImagePicker } from '@ionic-native/image-picker';
 import {IonicImageLoader} from 'ionic-image-loader';
 import {CallNumber} from '@ionic-native/call-number';
 import { Geolocation } from '@ionic-native/geolocation';
+import { Badge } from '@ionic-native/badge';
+
 
 
 export const firebaseConfig = {
@@ -49,7 +52,8 @@ export const firebaseConfig = {
     NewFieldPage,
     AdminHomePage,
     DetailComplexPage,
-    NewReservationPage
+    NewReservationPage,
+    ProfilePage
   ],
   imports: [
     BrowserModule,
@@ -72,7 +76,8 @@ export const firebaseConfig = {
     NewFieldPage,
     AdminHomePage,
     DetailComplexPage,
-    NewReservationPage
+    NewReservationPage,
+    ProfilePage
   ],
   providers: [
     StatusBar,
@@ -84,6 +89,7 @@ export const firebaseConfig = {
     Camera,
     CallNumber,
     Geolocation,
+    Badge
   ]
 })
 export class AppModule {}

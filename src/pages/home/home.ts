@@ -11,6 +11,7 @@ import { DetailComplexPage } from '../detail-complex/detail-complex';
 import * as moment from 'moment';
 import cities from '../../app/cities';
 import { Content } from 'ionic-angular';
+import { Badge } from '@ionic-native/badge';
 
 @Component({
   selector: 'page-home',
@@ -28,9 +29,11 @@ export class HomePage {
   selectedCountry;
   selectedCity = null;
   showFilter = true;
+  badgeCounter: number = 0;
 
   constructor(public navCtrl: NavController,
     private databaseProvider: DatabaseProvider,
+    public badge: Badge,
     private authProvider: AuthenticationProvider) {
     this.authProvider.getStatus().subscribe((session) => {
       if (session == null) {
@@ -86,6 +89,10 @@ export class HomePage {
     this.databaseProvider.getPlayerReservations(this.currentUser.uid).valueChanges().subscribe((data: any) => {
       this.userReservations = data;
       this.userReservations.reverse();
+      if (this.segment == 'complexes'){
+        this.badgeCounter = this.badgeCounter + 1;
+        this.badge.set(this.badgeCounter);
+      }
       console.log('Reservations', this.userReservations);
     }, (err) => {
       console.log(err);

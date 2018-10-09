@@ -9,10 +9,17 @@
 
   <ion-content>
     <ion-list>
+      <div *ngIf="currentUser">
+          <ion-item>
+            <img class="user-avatar" src="{{currentUser.avatar || '../../assets/imgs/user.png'}}">
+              <h1><b>{{currentUser.name}}</b></h1>
+              <p>{{currentUser.email}}</p>
+            </ion-item>
+      </div>
       <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
         {{p.title}}
       </button>
-      <button menuClose ion-item (click)="logout()" >LogOut</button>
+      <button menuClose ion-item (click)="logout()">LogOut</button>
     </ion-list>
   </ion-content>
 

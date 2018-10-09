@@ -71,6 +71,9 @@ export class DatabaseProvider {
   updateComplexImages(imageURL) {
     return this.firebaseDatabase.object('/complexes/' + imageURL.complexId + '/images/' + imageURL.imageId).set(imageURL);
   }
+  updateUserAvatar(imageURL) {
+    return this.firebaseDatabase.object('/users/' + imageURL.userId + '/avatar').set(imageURL.imageUrl);
+  }
 
   //Field Protocols
   saveField(field) {
@@ -86,7 +89,7 @@ export class DatabaseProvider {
     return this.firebaseDatabase.object('reservations/' + reservation.id).update(reservation);
   }
   getPlayerReservations(uid) {
-    return this.firebaseDatabase.list('reservations/', ref => ref.orderByChild('playerId').equalTo(uid).limitToLast(20));
+    return this.firebaseDatabase.list('reservations/', ref => ref.orderByChild('playerId').equalTo(uid).limitToLast(10));
   }
   getAdminReservations(uid) {
     return this.firebaseDatabase.list('reservations/', ref => ref.orderByChild('ownerId').equalTo(uid).limitToLast(20));

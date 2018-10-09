@@ -1,3 +1,4 @@
+import { Badge } from '@ionic-native/badge';
 
 import { HomePage } from './../home/home';
 import { DetailComplexPage } from './../detail-complex/detail-complex';
@@ -29,9 +30,10 @@ import { Complex } from '../../interfaces/complex';
 export class AdminHomePage {
   currentUser: User;
   segment = 'complexes';
-  userComplexes;
+  userComplexes: Complex[];
   userReservations: Reservation[];
   userBlacklist: User[];
+  badgeCounter: number = 0;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private authProvider: AuthenticationProvider,
@@ -40,6 +42,7 @@ export class AdminHomePage {
     public alertCtrl: AlertController,
     public modalCtrl: ModalController,
     private callNumber: CallNumber,
+    public badge: Badge,
     public toastCtrl: ToastController) {
 
     this.authProvider.getStatus().subscribe((session) => {
@@ -89,6 +92,14 @@ export class AdminHomePage {
     this.databaseProvider.getAdminReservations(this.currentUser.uid).valueChanges().subscribe((data: any) => {
       this.userReservations = data;
       this.userReservations.reverse();
+      if (this.segment == 'complexes'){
+        this.badgeCounter = this.badgeCounter + 1;
+        this.badge.set(this.badgeCounter).then((data)=>{
+          console.log('Succes', data);
+        }).catch((err)=>{
+          console.log('Error', err);
+        });
+      };
     }, (err) => {
       console.log(err);
     });
