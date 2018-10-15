@@ -4,7 +4,7 @@ import { HomePage } from './../home/home';
 import { DetailComplexPage } from './../detail-complex/detail-complex';
 import { AuthenticationProvider } from './../../providers/authentication/authentication';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController, ActionSheetController, AlertController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController, ActionSheetController, AlertController, ModalController, LoadingController } from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
 import { User } from '../../interfaces/user';
 import { LoginPage } from '../login/login';
@@ -35,6 +35,10 @@ export class AdminHomePage {
   userBlacklist: User[];
   badgeCounter: number = 0;
 
+  loading = this.loadingCtrl.create({
+    content: 'Por Favor Espere...'
+  });
+
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private authProvider: AuthenticationProvider,
     private databaseProvider: DatabaseProvider,
@@ -42,6 +46,7 @@ export class AdminHomePage {
     public alertCtrl: AlertController,
     public modalCtrl: ModalController,
     private callNumber: CallNumber,
+    public loadingCtrl: LoadingController,
     public badge: Badge,
     public toastCtrl: ToastController) {
 
@@ -49,15 +54,16 @@ export class AdminHomePage {
       if (session == null) {
         this.navCtrl.setRoot(LoginPage);
       } else {
+        this.loading.present()
         this.databaseProvider.getUserById(session.uid).valueChanges().subscribe((user: any) => {
           this.currentUser = user;
+          this.loading.dismiss();
           if (this.currentUser.type !== 'admin') {
             this.navCtrl.setRoot(HomePage);
           }
           this.getUserComplexes();
           this.getReservations();
           this.getUserBlackList();
-          console.log(this.currentUser);
         }, (err) => {
           console.log(err);
         });
@@ -67,23 +73,24 @@ export class AdminHomePage {
     });
   }
 
+
   getAllComplexImages(complex) {
-    return Object.keys(complex.images).map(i => complex.images[i]); 
+    return Object.keys(complex.images).map(i => complex.images[i]);
   }
 
   getUserComplexes() {
-    this.databaseProvider.getUserComplexes(this.currentUser.uid).valueChanges().subscribe((data:any)=>{
+    this.databaseProvider.getUserComplexes(this.currentUser.uid).valueChanges().subscribe((data: any) => {
       this.userComplexes = data;
       console.log(this.userComplexes);
-    },(err)=>{
+    }, (err) => {
       console.log(err);
     });
   }
-  getUserBlackList(){
-    this.databaseProvider.getUserBlacklist(this.currentUser.uid).valueChanges().subscribe((data: any)=>{
+  getUserBlackList() {
+    this.databaseProvider.getUserBlacklist(this.currentUser.uid).valueChanges().subscribe((data: any) => {
       this.userBlacklist = data;
       console.log('BlackList', this.userBlacklist)
-    },(err)=>{
+    }, (err) => {
       console.log(err);
     });
   }
@@ -92,13 +99,8 @@ export class AdminHomePage {
     this.databaseProvider.getAdminReservations(this.currentUser.uid).valueChanges().subscribe((data: any) => {
       this.userReservations = data;
       this.userReservations.reverse();
-      if (this.segment == 'complexes'){
+      if (this.segment == 'complexes') {
         this.badgeCounter = this.badgeCounter + 1;
-        this.badge.set(this.badgeCounter).then((data)=>{
-          console.log('Succes', data);
-        }).catch((err)=>{
-          console.log('Error', err);
-        });
       };
     }, (err) => {
       console.log(err);
@@ -139,7 +141,7 @@ export class AdminHomePage {
     actionSheet.present();
   }
 
-  presentReservationSheet(reservation){
+  presentReservationSheet(reservation) {
     const actionSheet = this.actionSheetCtrl.create({
       title: 'Acciones',
       buttons: [
@@ -195,7 +197,7 @@ export class AdminHomePage {
     } else {
       try {
         await complexImages.forEach(e => {
-          this.databaseProvider.deleteComplexImagesSt(e.imageId + '.jpg').subscribe(() => {
+          this.databaseProvider.deleteImageFromStorage(e.imageId + '.jpg').subscribe(() => {
             console.log(`Deleted Image: ${e.imageId}`);
           }, (err) => {
             console.log(err);
@@ -244,22 +246,24 @@ export class AdminHomePage {
     });
   }
 
-  call(number){
+  call(number) {
     this.callNumber.callNumber(number, true)
-    .then(res => console.log(res))
-    .catch(err => console.log(err));
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
   }
-  addPlayerToBlacklist(player){
-    this.databaseProvider.addToBlacklist(this.currentUser.uid, player).then(()=>{
+
+  addPlayerToBlacklist(player) {
+    this.databaseProvider.addToBlacklist(this.currentUser.uid, player).then(() => {
       console.log('Player added to your BlackList');
-    }).catch((err)=>{
+    }).catch((err) => {
       console.log(err);
     });
   }
-  checkUser(playerId){
+
+  checkUser(playerId) {
     let check = false;
     this.userBlacklist.forEach(element => {
-      if (playerId == element.uid){
+      if (playerId == element.uid) {
         check = true;
       };
     });

@@ -144,7 +144,7 @@ export class NewComplexPage {
     } else {
       try {
         await this.complexImages.forEach(e => {
-          this.databaseProvider.deleteComplexImagesSt(e.imageId + '.jpg').subscribe(() => {
+          this.databaseProvider.deleteImageFromStorage(e.imageId + '.jpg').subscribe(() => {
             console.log(`Deleted Image: ${this.imageId}`);
           }, (err) => {
             console.log(err);

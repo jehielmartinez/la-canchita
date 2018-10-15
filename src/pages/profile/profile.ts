@@ -5,6 +5,9 @@ import { AuthenticationProvider } from './../../providers/authentication/authent
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
 import { User } from '../../interfaces/user';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+
 
 /**
  * Generated class for the ProfilePage page.
@@ -21,6 +24,7 @@ import { User } from '../../interfaces/user';
 export class ProfilePage {
   currentUser: User;
   imageId;
+  uploadPercent: Observable<number>;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private authProvider: AuthenticationProvider,
@@ -43,37 +47,41 @@ export class ProfilePage {
   async uploadImage(source) {
     try {
       let cameraOptions: CameraOptions = {
-        quality: 80,
+        quality: 70,
         destinationType: this.camera.DestinationType.DATA_URL,
         encodingType: this.camera.EncodingType.JPEG,
         mediaType: this.camera.MediaType.PICTURE,
         allowEdit: true,
-      };
+      }
+
       cameraOptions.sourceType = (source == 'camera' ? this.camera.PictureSourceType.CAMERA : this.camera.PictureSourceType.PHOTOLIBRARY);
       const result = await this.camera.getPicture(cameraOptions);
       const image = `data:image/jpeg;base64,${result}`;
       this.imageId = Date.now();
-      this.databaseProvider.uploadImage(this.imageId + '.jpg', image).then(() => {
-        this.databaseProvider.getDownloadUrl(this.imageId + '.jpg').subscribe((url) => {
-          let imageURL = {
-            imageId: this.imageId,
-            imageUrl: url,
-            userId: this.currentUser.uid
-          };
-          this.databaseProvider.updateUserAvatar(imageURL).catch(() => {
-            console.log('Avatar Actualizado');
-          }).catch((err) => {
+
+      const task = this.databaseProvider.uploadImage(this.imageId + '.jpg', image)
+      this.uploadPercent = task.percentageChanges();
+      task.snapshotChanges().pipe(
+        finalize(() => {
+          this.databaseProvider.getDownloadUrl(this.imageId + '.jpg').subscribe((url) => {
+            let imageURL = {
+              imageId: this.imageId,
+              imageUrl: url,
+              userId: this.currentUser.uid
+            };
+            this.databaseProvider.updateUserAvatar(imageURL).then(() => {
+              console.log('Avatar Actualizado');
+            }).catch((err) => {
+              console.log(err);
+            });
+          }, (err) => {
             console.log(err);
           });
-        }, (err) => {
-          console.log(err);
-        });
-      }).catch((err) => {
-        console.log(err);
-      });
+        })
+      ).subscribe()
     } catch (err) {
       console.log(err);
-    };
+    }
   }
 
   saveProfile() {
@@ -93,14 +101,6 @@ export class ProfilePage {
   cancel() {
     this.navCtrl.setRoot(HomePage);
   }
-
-  // resetPassword() {
-  //   this.authProvider.changePassword('jehielmartinez@gmail.com').then(() => {
-  //     console.log('Email Send!')
-  //   }).catch((err) => {
-  //     console.log(err);
-  //   });
-  // }
 
   resetPassword() {
     const prompt = this.alertController.create({

@@ -91,14 +91,13 @@ export class HomePage {
       this.userReservations.reverse();
       if (this.segment == 'complexes'){
         this.badgeCounter = this.badgeCounter + 1;
-        this.badge.set(this.badgeCounter);
+        // this.badge.set(this.badgeCounter);
       }
       console.log('Reservations', this.userReservations);
     }, (err) => {
       console.log(err);
     });
   }
-
 
   goToDetailComplex(_complexId) {
     this.navCtrl.push(DetailComplexPage, _complexId);
@@ -108,6 +107,7 @@ export class HomePage {
     let str: String = `${moment(reservation.startDate).locale('es').format('D-MMM')} de ${moment(reservation.startDate).locale('es').format('hh:00 A')} a ${moment(reservation.endDate).locale('es').format('hh:00 A')}`
     return str
   }
+
   createdStr(createdAt) {
     let str: String = `${moment(createdAt).locale('es').fromNow()}`
     return str
@@ -120,6 +120,5 @@ export class HomePage {
       console.log(err);
     });
   }
-
 
 }

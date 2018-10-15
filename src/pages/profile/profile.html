@@ -19,6 +19,10 @@
     <ion-row>
       <img class="user-avatar" src="{{currentUser.avatar || '../../assets/imgs/user.png'}}" imageViewer />
     </ion-row>
+    <ion-row>
+      <div [style.width.%]="uploadPercent | async" class="progress-bar"></div>
+    </ion-row>
+
     <ion-row class="inline">
       <ion-col col-12 offset-8>
         <button ion-button (click)="uploadImage('camera')" color="secondary">
@@ -48,12 +52,18 @@
         </ion-label>
         <ion-input [(ngModel)]="currentUser.age" type="number"></ion-input>
       </ion-item>
+      <ion-item *ngIf="currentUser.type == 'player'">
+        <ion-label floating> Cambiar Tipo de Usuario</ion-label>
+        <ion-select [(ngModel)]="currentUser.type">
+          <ion-option value="player">Jugador</ion-option>
+          <ion-option value="admin">Administrador</ion-option>
+        </ion-select>
+      </ion-item>
       <br>
       <ion-item>
         <a><b>Cambiar Contraseña</b></a>
       </ion-item>
     </ion-list>
-
 
   </div>
   <div class="save-buttons">

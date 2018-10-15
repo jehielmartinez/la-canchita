@@ -26,20 +26,22 @@ import { DatabaseProvider } from '../providers/database/database';
 import { HttpClientModule } from '@angular/common/http';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { ImagePicker } from '@ionic-native/image-picker';
-import {IonicImageLoader} from 'ionic-image-loader';
-import {CallNumber} from '@ionic-native/call-number';
+import { IonicImageLoader } from 'ionic-image-loader';
+import { CallNumber } from '@ionic-native/call-number';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Badge } from '@ionic-native/badge';
-
+import { Facebook } from '@ionic-native/facebook';
+import { GooglePlus } from '@ionic-native/google-plus';
+import { NgProgressModule } from 'ng2-progressbar';
 
 
 export const firebaseConfig = {
-    apiKey: "AIzaSyCjLsz4nD-6_nVdK7_bb8lbT88lppdlf84",
-    authDomain: "lacanchita-433c8.firebaseapp.com",
-    databaseURL: "https://lacanchita-433c8.firebaseio.com",
-    projectId: "lacanchita-433c8",
-    storageBucket: "lacanchita-433c8.appspot.com",
-    messagingSenderId: "173545575110"
+  apiKey: "AIzaSyCjLsz4nD-6_nVdK7_bb8lbT88lppdlf84",
+  authDomain: "lacanchita-433c8.firebaseapp.com",
+  databaseURL: "https://lacanchita-433c8.firebaseio.com",
+  projectId: "lacanchita-433c8",
+  storageBucket: "lacanchita-433c8.appspot.com",
+  messagingSenderId: "173545575110"
 }
 
 @NgModule({
@@ -60,12 +62,13 @@ export const firebaseConfig = {
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule,
-    AngularFireAuthModule,  
+    AngularFireAuthModule,
     AngularFireStorageModule,
     HttpClientModule,
     IonicImageViewerModule,
-    IonicImageLoader.forRoot()
-      ],
+    IonicImageLoader.forRoot(),
+    NgProgressModule
+  ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
@@ -82,14 +85,16 @@ export const firebaseConfig = {
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
     AuthenticationProvider,
     DatabaseProvider,
     ImagePicker,
     Camera,
     CallNumber,
     Geolocation,
-    Badge
+    Badge,
+    Facebook,
+    GooglePlus
   ]
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,9 +1,12 @@
+import { GooglePlus } from '@ionic-native/google-plus';
+import { User } from './../../interfaces/user';
+import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
 import { AuthenticationProvider } from '../../providers/authentication/authentication';
-import { User } from '../../interfaces/user';
 import { HomePage } from '../home/home';
+import firebase from 'firebase';
 
 /**
  * Generated class for the LoginPage page.
@@ -25,9 +28,16 @@ export class LoginPage {
   phone: string;
   email: string;
   operation: string = 'login';
+  user;
 
-
-  constructor(public navCtrl: NavController, public navParams: NavParams, private toastCtrl: ToastController, private databaseProvider: DatabaseProvider, private authProvider: AuthenticationProvider, private alertCtrl: AlertController) { }
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
+    private toastCtrl: ToastController,
+    private databaseProvider: DatabaseProvider,
+    private authProvider: AuthenticationProvider,
+    private facebook: Facebook,
+    private gplus: GooglePlus,
+    private alertCtrl: AlertController) { }
 
   registerWithEmail() {
     if (this.password !== this.password2) {
@@ -64,7 +74,7 @@ export class LoginPage {
           position: 'bottom'
         });
         toast.present();
-        console.log('Error',err);
+        console.log('Error', err);
       });
     }).catch((err) => {
       let toast = this.toastCtrl.create({
@@ -98,40 +108,99 @@ export class LoginPage {
     });
   }
 
+  async facebookLogin() {
+    try {
+       await this.facebook.login(['email', 'public_profile']).then((res: FacebookLoginResponse) => {
+        const facebookCredential = firebase.auth.FacebookAuthProvider.credential(res.authResponse.accessToken);
+         this.authProvider.loginWithCredential(facebookCredential).then((data: any) => {
+          this.user = data.user;
+          console.log('Facebook Logged', this.user);
+          this.databaseProvider.getUserById(this.user.uid).valueChanges().subscribe((data: User) => {
+            console.log(data)
+            if (data == null) {
+              this.createNewAccount();
+            } else {
+              this.navCtrl.setRoot(HomePage);
+            }
+          }, (err) => {
+            console.log('Error', err);
+          });
+        });
+      }).catch((err) => {
+        console.log('Error', err);
+      });
+    } catch (err) {
+      console.log(err);
+    }
 
-  resetPassword() {
-    const prompt = this.alertCtrl.create({
-      title: 'Cambiar Contraseña',
-      message: 'Ingrese su Email, le enviaremos un enlace con instrucciones',
-      inputs: [
-        {
-          name: 'email',
-          placeholder: 'Email'
-        }
-      ],
-      buttons: [{
-        text: 'Cancelar',
-        handler: data => {
-          console.log(data);
-        }
-      },
-      {
-        text: 'Enviar',
-        handler: data => {
-          this.authProvider.changePassword(data.email).then((data) => {
-            let toast = this.toastCtrl.create({
-              message: 'Solicitud Enviada',
-              duration: 3000,
-              position: 'bottom'
-            })
-            toast.present();
-          }).catch((error) => {
-            console.log(error);
-          })
-        }
+  }
+
+  async googleLogin() {
+    try {
+      const gplusUser = await this.gplus.login({
+        'webClientId': '173545575110-1eg0a58li9ldvdthgm78qdos9nsoabkj.apps.googleusercontent.com',
+        'offline': true,
+        'scopes': 'profile email'
+      })
+      await this.authProvider.loginWithCredential(firebase.auth.GoogleAuthProvider.credential(gplusUser.idToken)).then((data: any) => {
+        this.user = data.user;
+        console.log('Google Logged', this.user);
+        this.databaseProvider.getUserById(this.user.uid).valueChanges().subscribe((data: User) => {
+          console.log(data)
+          if (data == null) {
+            this.createNewAccount();
+          } else {
+            this.navCtrl.setRoot(HomePage);
+          }
+        }, (err) => {
+          console.log(err);
+        });
+      }).catch((err) => {
+        console.log(err);
+      })
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  createNewAccount() {
+    const newUser: User = {
+      name: this.user.displayName,
+      uid: this.user.uid,
+      email: this.user.email,
+      phone: this.user.phoneNumber,
+      avatar: this.user.photoURL,
+      type: 'player'
+    }
+    this.databaseProvider.createNewAccount(newUser).then((data) => {
+      console.log('User Registered', data);
+      this.navCtrl.setRoot(HomePage);
+    }).catch((err) => {
+      console.log('Error', err)
+    });
+  }
+
+  selectTypeAlert() {
+    const prompt = this.alertCtrl.create();
+    prompt.setTitle('Tipo de Usuario');
+    prompt.addInput({
+      type: 'checkbox',
+      label: 'Jugador',
+      value: 'player',
+      checked: true
+    });
+    prompt.addInput({
+      type: 'checkbox',
+      label: 'Administrador',
+      value: 'admin',
+      checked: false
+    });
+    prompt.addButton({
+      text: 'Ok',
+      handler: data => {
+        console.log('Checkbox data:', data);
+        this.user.type == data;
       }
-      ]
-
     });
     prompt.present();
   }
@@ -139,5 +208,4 @@ export class LoginPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
   }
-
 }

@@ -1,3 +1,4 @@
+import { Facebook } from '@ionic-native/facebook';
 import { DatabaseProvider } from './../providers/database/database';
 
 import { AuthenticationProvider } from './../providers/authentication/authentication';
@@ -10,6 +11,7 @@ import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { User } from '../interfaces/user';
 import { ProfilePage } from '../pages/profile/profile';
+import { GooglePlus } from '@ionic-native/google-plus';
 
 @Component({
   templateUrl: 'app.html'
@@ -25,6 +27,8 @@ export class MyApp {
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
     private authProvider: AuthenticationProvider,
     private databaseProvider: DatabaseProvider,
+    private gplus: GooglePlus,
+    private facebook: Facebook,
     private app: App) {
     this.initializeApp();
 
@@ -35,11 +39,11 @@ export class MyApp {
     ];
 
     this.authProvider.getStatus().subscribe((session) => {
-        this.databaseProvider.getUserById(session.uid).valueChanges().subscribe((user: any) => {
-          this.currentUser = user;
-        }, (err) => {
-          console.log(err);
-        });
+      this.databaseProvider.getUserById(session.uid).valueChanges().subscribe((user: any) => {
+        this.currentUser = user;
+      }, (err) => {
+        console.log(err);
+      });
     }, (err) => {
       console.log(err);
     });
@@ -47,7 +51,15 @@ export class MyApp {
   }
   logout() {
     this.authProvider.logout().then(() => {
-      this.app.getRootNav().setRoot(LoginPage);
+      this.gplus.logout().then(() => {
+        this.facebook.logout().then(() => {
+          this.app.getRootNav().setRoot(LoginPage);
+        }).catch((err) => {
+          console.log(err);
+        })
+      }).catch((err) => {
+        console.log(err);
+      })
     }).catch((error) => {
       console.log(error);
     })

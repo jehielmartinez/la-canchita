@@ -31,6 +31,9 @@ export class DatabaseProvider {
   getUserBlacklist(uid){
     return this.firebaseDatabase.list('users/' + uid + '/blacklist/');
   }
+  createNewAccount(user){
+    return this.firebaseDatabase.object('users/' + user.uid).set(user);
+  }
 
   //Complex Protocols
   saveComplex(complex: Complex) {
@@ -65,7 +68,7 @@ export class DatabaseProvider {
   deleteComplexImagesDb(complexId) {
     return this.firebaseDatabase.list('/complexes/' + complexId + '/images/').remove();
   }
-  deleteComplexImagesSt(image_name) {
+  deleteImageFromStorage(image_name) {
     return this.fireStorage.ref(`images/${image_name}`).delete();
   }
   updateComplexImages(imageURL) {

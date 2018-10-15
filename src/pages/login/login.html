@@ -16,10 +16,12 @@
 <ion-content padding>
   <ion-row>
     <div class="logo-image">
-      <img src="assets/imgs/icon-la-canchita-black.png">
+      <img src="assets/imgs/logo-la-canchita.png">
     </div>
+    <br>
   </ion-row>
-  <ion-list>
+
+  <!-- <ion-list>
     <ion-item *ngIf="operation === 'register'">
       <ion-label floating>Tipo de Usuario</ion-label>
       <ion-select [(ngModel)]="type">
@@ -47,19 +49,23 @@
       <ion-label floating>Repetir Contraseña</ion-label>
       <ion-input [(ngModel)]="password2" type="password"></ion-input>
     </ion-item>
+  </ion-list> -->
 
-  </ion-list>
   <div padding>
-    <span *ngIf="operation === 'login'">Aun no tienes cuenta? <a (click)="operation = 'register'"><b>Click Aquí</b></a></span>
-    <span *ngIf="operation === 'register'">Ya tienes cuenta? <a (click)="operation = 'login'"><b>Click Aquí</b></a></span>
+    <!-- <span *ngIf="operation === 'login'">Aun no tienes cuenta? <a (click)="operation = 'register'"><b>Click Aquí</b></a></span>
+    <span *ngIf="operation === 'register'">Ya tienes cuenta? <a (click)="operation = 'login'"><b>Click Aquí</b></a></span> -->
 
     <hr>
-    <button color="secondary" *ngIf="operation === 'login'" ion-button block round (click)="loginWithEmail()">Ingresar</button>
+    <button class="google" *ngIf="operation === 'login'" ion-button block round (click)="googleLogin()"><ion-icon class="mdi mdi-google-plus-box"></ion-icon> Ingresar con Google</button>
+    
+    <button class="facebook" *ngIf="operation === 'login'" ion-button block round (click)="facebookLogin()"><ion-icon class= "mdi mdi-facebook-box"></ion-icon> Ingresar con Facebook</button>
+    
+    <!-- <button color="secondary" *ngIf="operation === 'login'" ion-button block round (click)="loginWithEmail()">Ingresar</button> -->
     <button color="secondary" *ngIf="operation === 'register'" ion-button block round (click)="registerWithEmail()">Registrarse</button>
     <hr>
     <button color="danger" *ngIf="operation === 'register'" ion-button block round (click)="operation = 'login'">Cancelar</button>
     <br>
     <span float-right *ngIf="operation === 'login'"><a (click)="resetPassword()"><b>Olvidaste tu Contraseña?</b></a></span>
-
+    
   </div>
 </ion-content>
