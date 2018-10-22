@@ -56,7 +56,6 @@ export class NewReservationPage {
     { value: '22:00', show: '10:00 pm', status: 'free' },
     { value: '23:00', show: '11:00 pm', status: 'free' },
   ]
-  duration: number = 1;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private databaseProvider: DatabaseProvider,
@@ -110,6 +109,7 @@ export class NewReservationPage {
   }
 
   checkDisponibility() {
+    this.hours.forEach(e => e.status = 'free');
     this.databaseProvider.getDisponibility(this.selectedField, moment(this.selectedDate).format('YYYY-MM-DD')).valueChanges().subscribe((disp) => {
       this.disponibility = [].concat.apply([], disp);
       this.hourReserved()
@@ -119,11 +119,10 @@ export class NewReservationPage {
     });
   }
 
-  hourReserved() {
+  hourReserved() {   
     this.disponibility.forEach((hour)=> {
       this.hours.find(element => element.value === hour).status = 'reserved';
     });
-    // return this.disponibility.some(e => e === hour);
   }
 
   createConfirm(reservation) {
@@ -199,9 +198,6 @@ export class NewReservationPage {
 
   cancel() {
     this.navCtrl.pop();
-  }
-
-  selectToggle() {
   }
 
   ionViewDidLoad() {
