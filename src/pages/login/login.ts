@@ -2,7 +2,7 @@ import { GooglePlus } from '@ionic-native/google-plus';
 import { User } from './../../interfaces/user';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController, AlertController, Platform } from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
 import { AuthenticationProvider } from '../../providers/authentication/authentication';
 import { HomePage } from '../home/home';
@@ -37,6 +37,7 @@ export class LoginPage {
     private authProvider: AuthenticationProvider,
     private facebook: Facebook,
     private gplus: GooglePlus,
+    private platform: Platform,
     private alertCtrl: AlertController) { }
 
   registerWithEmail() {
@@ -134,8 +135,24 @@ export class LoginPage {
     }
 
   }
+  googleLogin(){
+    if (this.platform.is('cordova')){
+      this.nativeGoogleLogin();
+    } else {
+      this.webGoogleLogin();
+    }
+  }
 
-  async googleLogin() {
+  async webGoogleLogin(){
+    try {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      const credential = await this.authProvider.loginWithPopUp(provider);
+    } catch (err){
+      console.log('Error', err);
+    }
+  }
+
+  async nativeGoogleLogin() {
     try {
       const gplusUser = await this.gplus.login({
         'webClientId': '173545575110-1eg0a58li9ldvdthgm78qdos9nsoabkj.apps.googleusercontent.com',

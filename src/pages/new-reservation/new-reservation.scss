@@ -1,3 +1,19 @@
 page-new-reservation {
 
+.hour-selection-box{
+    height: 60px;
+    background-color: color($colors, secondary);
+    border-color: black;
+    margin: 2px;
+    border-radius: 7px;
+    color: white;
+    font-size: 14px;
+}
+.reserved{
+    background-color: color($colors, secondaryDark);
+}
+.selected{
+    background-color: color($colors, secondaryLight);
+}
+
 }

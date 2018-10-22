@@ -25,6 +25,10 @@ export class AuthenticationProvider {
     return this.firebaseAuth.auth.signInAndRetrieveDataWithCredential(credential);
   }
 
+  loginWithPopUp(provider){
+    return this.firebaseAuth.auth.signInWithPopup(provider);
+  }
+
   changePassword(email){
     return this.firebaseAuth.auth.sendPasswordResetEmail(email);
   }

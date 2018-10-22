@@ -89,19 +89,28 @@ export class DatabaseProvider {
 
   //Reservation Protocols
   makeReservation(reservation) {
-    return this.firebaseDatabase.object('reservations/' + reservation.id).update(reservation);
+    return this.firebaseDatabase.object('reservations/' + reservation.date + '/' + reservation.id).update(reservation);
   }
-  getPlayerReservations(uid) {
-    return this.firebaseDatabase.list('reservations/', ref => ref.orderByChild('playerId').equalTo(uid).limitToLast(10));
+  getPlayerReservations(uid, date) {
+    return this.firebaseDatabase.list('reservations/' + date + '/', ref => ref.orderByChild('playerId').equalTo(uid).limitToLast(10));
   }
-  getAdminReservations(uid) {
-    return this.firebaseDatabase.list('reservations/', ref => ref.orderByChild('ownerId').equalTo(uid).limitToLast(20));
+  getReservations(uid){
+    return  this.firebaseDatabase.list('reservations/',ref => ref.orderByChild('playerId').equalTo(uid).limitToLast(10));
   }
-  actionReservation(reservationId, action) {
-    return this.firebaseDatabase.object('reservations/' + reservationId).update({ status: action });
+  getAdminReservations(uid, date) {
+    return this.firebaseDatabase.list('reservations/' + date + '/', ref => ref.orderByChild('ownerId').equalTo(uid));
+  }
+  actionReservation(reservation, action) {
+    return this.firebaseDatabase.object('reservations/' + reservation.date + '/' + reservation.id).update({ status: action });
   }
   deleteReservation(reservationId) {
     return this.firebaseDatabase.object('reservations/' + reservationId).remove();
+  }
+  disponibility(reservation, dispArray){
+    return this.firebaseDatabase.list('complexes/' + reservation.complex.id + '/fields/' + reservation.fieldId + '/reservedDates/' + reservation.date).push(dispArray);
+  }
+  getDisponibility(field, date){ 
+    return this.firebaseDatabase.list('complexes/' + field.complexId + '/fields/' + field.id + '/reservedDates/' + date);
   }
 
 }

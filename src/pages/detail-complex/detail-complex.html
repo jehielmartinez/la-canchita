@@ -94,13 +94,16 @@
     <ion-list *ngIf="complexFields">
       <ion-item-divider color="light">Canchas</ion-item-divider>
       <ion-item-sliding *ngFor="let field of complexFields">
+
         <ion-item>
           <ion-icon class="mdi mdi-soccer-field" item-start></ion-icon>
           <h2>{{field.name}}</h2>
           <h5 style="color: gray">{{field.type}}, {{field.grass}}, {{field.teamPlayers}}x{{field.teamPlayers}}</h5>
           <h4 style="color: red">L{{field.price}}/hora</h4>
+          
           <ion-icon class="mdi mdi-menu-left" item-end></ion-icon>
         </ion-item>
+
         <ion-item-options side="right">
           <button *ngIf="currentUser.type == 'admin'" ion-button (click)="deleteField(field)" color="danger">
             <ion-icon class="mdi mdi-delete-empty"></ion-icon>

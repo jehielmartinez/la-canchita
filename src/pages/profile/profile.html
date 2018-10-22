@@ -52,13 +52,6 @@
         </ion-label>
         <ion-input [(ngModel)]="currentUser.age" type="number"></ion-input>
       </ion-item>
-      <ion-item *ngIf="currentUser.type == 'player'">
-        <ion-label floating> Cambiar Tipo de Usuario</ion-label>
-        <ion-select [(ngModel)]="currentUser.type">
-          <ion-option value="player">Jugador</ion-option>
-          <ion-option value="admin">Administrador</ion-option>
-        </ion-select>
-      </ion-item>
       <br>
       <ion-item>
         <a><b>Cambiar Contraseña</b></a>

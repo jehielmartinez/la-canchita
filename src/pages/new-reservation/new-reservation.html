@@ -26,28 +26,28 @@
 
         <ion-item>
           <ion-label block>Fecha de Reservacion</ion-label>
-          <ion-datetime displayFormat="D MMM H:00" min="{{today}}" pickerFormat="D MMM h a" [(ngModel)]="startDate"></ion-datetime>
+          <ion-datetime (ionChange)="checkDisponibility()" displayFormat="D MMM" min="{{today}}" pickerFormat="DDDD DD MMM"
+            [(ngModel)]="selectedDate"></ion-datetime>
         </ion-item>
 
-        <ion-item>
-          <ion-label block>Duracion del Partido</ion-label>
-          <ion-select [(ngModel)]="duration">
-            <ion-option value="1">1 hora</ion-option>
-            <ion-option value="2">2 horas</ion-option>
-            <ion-option value="3">3 horas</ion-option>
-            <ion-option value="4">4 horas</ion-option>
-            <ion-option value="5">5 horas</ion-option>
-          </ion-select>
-        </ion-item>
-        <h5 style="color: gray" text-right>Total a Pagar: Lps. {{selectedField.price * duration}}</h5>
         <br>
+        <div>
+          <ion-slides slidesPerView="4" centeredSlides="true">
+            <ion-slide *ngFor="let item of hours" (click)="item.status == 'free' ? item.status = 'selected' : item.status == 'reserved' ? item.status = 'reserved' : item.status = 'free'"
+              class="hour-selection-box" [ngClass]="{'reserved': item.status == 'reserved', 'selected': item.status == 'selected'}">{{item.show}}</ion-slide>
+          </ion-slides>
+        </div>
+        <br>
+
+        <h5 style="color: gray" text-right>Precio por Hora: Lps. {{selectedField.price}}</h5>
+
         <div class="save-buttons">
           <ion-row>
             <ion-col>
-              <button ion-button block round (click)="cancel()" color="danger">Cancelar</button>
+              <button ion-button block round (click)="makeReservation()" color="primaryDark">Reservar</button>
             </ion-col>
             <ion-col>
-              <button ion-button block round (click)="makeReservation()" color="secondary">Reservar</button>
+              <button ion-button block round (click)="cancel()" color="light">Cancelar</button>
             </ion-col>
           </ion-row>
         </div>

@@ -26,10 +26,11 @@ export class HomePage {
   location: any;
   countries = ['Guatemala', 'Costa Rica', 'Honduras', 'Nicaragua', 'El Salvador', 'Panama'];
   cities = cities;
-  selectedCountry;
-  selectedCity = null;
-  showFilter = true;
+  selectedCountry = 'Honduras';
+  selectedCity = 'San Pedro Sula';
+  showFilter = false;
   badgeCounter: number = 0;
+  selectedDate = moment().format('YYYY-MM-DD');
 
   constructor(public navCtrl: NavController,
     private databaseProvider: DatabaseProvider,
@@ -86,13 +87,9 @@ export class HomePage {
   }
 
   getUserReservations() {
-    this.databaseProvider.getPlayerReservations(this.currentUser.uid).valueChanges().subscribe((data: any) => {
+    this.databaseProvider.getPlayerReservations(this.currentUser.uid, moment(this.selectedDate).format('YYYY-MM-DD')).valueChanges().subscribe((data: any) => {
       this.userReservations = data;
       this.userReservations.reverse();
-      if (this.segment == 'complexes'){
-        this.badgeCounter = this.badgeCounter + 1;
-        // this.badge.set(this.badgeCounter);
-      }
       console.log('Reservations', this.userReservations);
     }, (err) => {
       console.log(err);

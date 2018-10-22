@@ -48,6 +48,10 @@
 
   <div *ngIf="segment == 'reservations'">
     <ion-list>
+        <ion-item>
+            <ion-label block>Ingrese Fecha</ion-label>
+            <ion-datetime (ionChange)="getReservations()" displayFormat="DD MMM" pickerFormat="D MMM" [(ngModel)]="selectedDate"></ion-datetime>
+          </ion-item>
       <ion-item-sliding (press)="presentReservationSheet(reservation)" *ngFor="let reservation of userReservations">
 
         <ion-item>
@@ -55,7 +59,7 @@
               'mdi-checkbox-marked-circle': reservation.status == 'confirmed',
               'mdi-cancel': reservation.status == 'player-canceled',
               'mdi-close-circle': reservation.status == 'admin-canceled'}" item-start></ion-icon>
-          <h2 text-wrap><b>{{reservation.complexName}}</b></h2>
+          <h2 text-wrap><b>{{reservation.complex.name}}</b></h2>
           <h5>{{reservation.fieldName}}</h5>
           <p text-wrap>{{dateStr(reservation)}}</p>
           <small>
@@ -67,11 +71,11 @@
         </ion-item>
 
         <ion-item-options side="right">
-          <button (click)="actionReservation(reservation.id, 'confirmed')" *ngIf="reservation.status == 'requested'" ion-button color="secondary">
+          <button (click)="actionReservation(reservation, 'confirmed')" *ngIf="reservation.status == 'requested'" ion-button color="secondary">
             <ion-icon class="mdi mdi-check-circle"></ion-icon>
             Confirmar
           </button>
-          <button (click)="actionReservation(reservation.id, 'admin-canceled')" *ngIf="reservation.status !== 'player-canceled'" ion-button
+          <button (click)="actionReservation(reservation, 'admin-canceled')" *ngIf="reservation.status !== 'player-canceled'" ion-button
             color="danger">
             <ion-icon class="mdi mdi-delete-empty"></ion-icon>
             Cancelar

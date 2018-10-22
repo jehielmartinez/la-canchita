@@ -34,6 +34,7 @@ export class AdminHomePage {
   userReservations: Reservation[];
   userBlacklist: User[];
   badgeCounter: number = 0;
+  selectedDate = moment().format('YYYY-MM-DD');
 
   loading = this.loadingCtrl.create({
     content: 'Por Favor Espere...'
@@ -96,7 +97,8 @@ export class AdminHomePage {
   }
 
   getReservations() {
-    this.databaseProvider.getAdminReservations(this.currentUser.uid).valueChanges().subscribe((data: any) => {
+    const date = moment(this.selectedDate).format('YYYY-MM-DD');
+    this.databaseProvider.getAdminReservations(this.currentUser.uid, date).valueChanges().subscribe((data: any) => {
       this.userReservations = data;
       this.userReservations.reverse();
       if (this.segment == 'complexes') {
@@ -230,9 +232,19 @@ export class AdminHomePage {
     this.navCtrl.push(NewComplexPage, complexId);
   }
 
-  actionReservation(reservationId, action) {
-    this.databaseProvider.actionReservation(reservationId, action).then(() => {
+  actionReservation(reservation, action) {
+    this.databaseProvider.actionReservation(reservation, action).then(() => {
       console.log('Reservacion Actualizada!', action);
+
+      if (action == 'confirmed') { 
+        let dispArray = []
+        reservation.reservedHours.forEach(element => {
+          dispArray.push(moment(element).format('HH:00'));
+        });
+        this.databaseProvider.disponibility(reservation, dispArray).then(() => {
+          console.log('Disponibility Updated');
+        })
+      }
     }).catch((err) => {
       console.log(err);
     });
